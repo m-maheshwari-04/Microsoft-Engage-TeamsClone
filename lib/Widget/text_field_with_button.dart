@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class TextFieldWithButton extends StatelessWidget {
   final TextEditingController textEditingController;
@@ -68,7 +69,7 @@ class TextFieldWithButton extends StatelessWidget {
                                     vertical: 8,
                                   ),
                                   hintText: 'Type a message',
-                                  hintStyle: TextStyle(
+                                  hintStyle:GoogleFonts.montserrat(
                                     fontSize: 14,
                                     color: Colors.grey,
                                   ),

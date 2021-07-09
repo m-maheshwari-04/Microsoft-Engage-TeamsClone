@@ -37,6 +37,9 @@ class _ChatPageState extends State<ChatPage> {
             hash = user.uid + currentUser!.uid;
           }
         }
+        hash = hash.toUpperCase();
+        print(hash);
+
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -59,23 +62,23 @@ class _ChatPageState extends State<ChatPage> {
               children: [
                 Text(
                   user.name,
-                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
+                  style:GoogleFonts.montserrat(fontSize: 15.0, fontWeight: FontWeight.w400),
                 ),
                 SizedBox(height: 2.0.h),
                 if (user.uid.length != 18)
                   Text(user.id,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
+                      style: GoogleFonts.montserrat(
                           color: Colors.grey,
                           fontSize: 14.0,
-                          fontWeight: FontWeight.w400))
+                          fontWeight: FontWeight.w200))
               ],
             )),
             SizedBox(width: 8.0.w),
             Text(
               user.time != null ? chatTime(user.time!) : '',
-              style: TextStyle(fontSize: 14.0),
+              style:GoogleFonts.montserrat(fontSize: 12.0),
             )
           ],
         ),
@@ -132,10 +135,10 @@ class _ChatPageState extends State<ChatPage> {
     time.docs.forEach((element) {
       if (element.id.length == 18) {
         allTime[element.id] = element['time'];
-      } else if ((element.id.startsWith(currentUser!.uid) ||
-          element.id.endsWith(currentUser!.uid))) {
+      } else if ((element.id.startsWith(currentUser!.uid.toUpperCase()) ||
+          element.id.endsWith(currentUser!.uid.toUpperCase()))) {
         String usr = '';
-        if (element.id.startsWith(currentUser!.uid)) {
+        if (element.id.startsWith(currentUser!.uid.toUpperCase())) {
           usr = element.id.substring(currentUser!.uid.length);
         } else {
           usr = element.id.substring(0, currentUser!.uid.length);
@@ -171,8 +174,8 @@ class _ChatPageState extends State<ChatPage> {
               id: allUsers[element]!.id,
               imgUrl: allUsers[element]!.imgUrl,
               name: allUsers[element]!.name,
-              time: allTime[element] != null
-                  ? DateTime.parse(allTime[element]!)
+              time: allTime[element.toString().toUpperCase()] != null
+                  ? DateTime.parse(allTime[element.toString().toUpperCase()]!)
                   : null,
               token: allUsers[element]!.token != null
                   ? allUsers[element]!.token
@@ -188,8 +191,8 @@ class _ChatPageState extends State<ChatPage> {
               id: allGroups[element]!.id,
               imgUrl: allGroups[element]!.imgUrl,
               name: allGroups[element]!.name,
-              time: allTime[element] != null
-                  ? DateTime.parse(allTime[element]!)
+              time: allTime[element.toString().toUpperCase()] != null
+                  ? DateTime.parse(allTime[element.toString().toUpperCase()]!)
                   : null,
               members: allGroups[element]!.members);
 
@@ -283,12 +286,12 @@ class _ChatPageState extends State<ChatPage> {
                             }
                             setState(() {});
                           },
-                          style: TextStyle(
+                          style: GoogleFonts.montserrat(
                               color: isDark ? light : Colors.white,
                               fontSize: 16.0),
                           decoration: InputDecoration(
                               hintText: 'Search...',
-                              hintStyle: TextStyle(
+                              hintStyle:GoogleFonts.montserrat(
                                 color: isDark ? light : Colors.white,
                               ),
                               filled: false,

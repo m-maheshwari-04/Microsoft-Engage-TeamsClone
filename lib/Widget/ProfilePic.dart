@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
@@ -56,7 +57,7 @@ class _ProfilePicState extends State<ProfilePic> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Image Preview'),
+        title: Text('Image Preview',style: GoogleFonts.montserrat()),
         elevation: 4,
       ),
       body: ProgressHUD(
@@ -76,7 +77,7 @@ class _ProfilePicState extends State<ProfilePic> {
                         onPressed: _cropImage,
                         child: Text(
                           'CROP PHOTO',
-                          style: TextStyle(
+                          style: GoogleFonts.montserrat(
                             fontSize: 18,
                             color: Theme.of(context).buttonColor,
                           ),
@@ -90,7 +91,7 @@ class _ProfilePicState extends State<ProfilePic> {
                   },
                   child: Text(
                     'UPLOAD PHOTO',
-                    style: TextStyle(
+                    style: GoogleFonts.montserrat(
                       fontSize: 18,
                       color: Theme.of(context).buttonColor,
                     ),

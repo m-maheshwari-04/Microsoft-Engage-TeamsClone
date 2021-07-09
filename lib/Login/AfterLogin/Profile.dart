@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:team_clone/Login/login_screen.dart';
 import 'package:team_clone/Widget/Toast.dart';
 import 'package:team_clone/constants.dart';
 import 'package:team_clone/nav_bar_file.dart';
@@ -65,7 +64,7 @@ class _ProfileState extends State<Profile> {
                       child: Text(
                         "Your Profile",
                         style: GoogleFonts.montserrat(
-                          textStyle: TextStyle(
+                          textStyle: GoogleFonts.montserrat(
                               fontSize: 24,
                               color: isDark ? Colors.white : Colors.black,
                               fontWeight: FontWeight.w500),
@@ -129,14 +128,14 @@ class _ProfileState extends State<Profile> {
                             border: Border.all(color: light)),
                         child: TextFormField(
                           cursorColor: light,
-                          style: TextStyle(
+                          style:GoogleFonts.montserrat(
                             color: light,
                           ),
                           controller: name,
                           decoration: InputDecoration(
                             hintText: "Your name",
-                            hintStyle: TextStyle(color: light),
-                            labelStyle: TextStyle(color: light),
+                            hintStyle:GoogleFonts.montserrat(color: light),
+                            labelStyle: GoogleFonts.montserrat(color: light),
                             alignLabelWithHint: true,
                             contentPadding: EdgeInsets.symmetric(
                                 vertical: 15, horizontal: 10),

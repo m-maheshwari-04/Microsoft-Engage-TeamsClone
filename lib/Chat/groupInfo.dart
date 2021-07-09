@@ -56,13 +56,13 @@ class _GroupInfoState extends State<GroupInfo> {
               children: [
                 Text(
                   user.name,
-                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
+                  style:GoogleFonts.montserrat(fontSize: 16.0, fontWeight: FontWeight.w600),
                 ),
                 SizedBox(height: 2.0),
                 Text(user.id,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
+                    style: GoogleFonts.montserrat(
                         color: Colors.grey,
                         fontSize: 14.0,
                         fontWeight: FontWeight.w400))
@@ -105,7 +105,7 @@ class _GroupInfoState extends State<GroupInfo> {
           iconTheme: IconThemeData(color: !isDark ? dark : Colors.white),
           title: Text(
             'Edit group details',
-            style: TextStyle(
+            style:GoogleFonts.montserrat(
                 fontSize: 16.sp, color: !isDark ? dark : Colors.white),
           ),
           actions: <Widget>[
@@ -231,14 +231,14 @@ class _GroupInfoState extends State<GroupInfo> {
                         border: Border.all(color: Colors.black)),
                     child: TextFormField(
                       cursorColor: Colors.black,
-                      style: TextStyle(
+                      style: GoogleFonts.montserrat(
                         color: Colors.black,
                       ),
                       controller: groupName,
                       decoration: InputDecoration(
                         hintText: "Group name",
-                        hintStyle: TextStyle(color: Colors.black),
-                        labelStyle: TextStyle(color: Colors.black),
+                        hintStyle: GoogleFonts.montserrat(color: Colors.black),
+                        labelStyle:GoogleFonts.montserrat(color: Colors.black),
                         alignLabelWithHint: true,
                         contentPadding:
                             EdgeInsets.symmetric(vertical: 15, horizontal: 10),

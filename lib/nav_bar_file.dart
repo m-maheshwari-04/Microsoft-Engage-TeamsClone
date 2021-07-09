@@ -107,7 +107,7 @@ class _NavBarClassState extends State<NavBarClass> {
         [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: Text('Microsoft Teams')),
+        appBar: AppBar(title: Text('Microsoft Teams',style: GoogleFonts.montserrat())),
         drawer: Drawer(
           child: Container(
             color: isDark ? dark : Colors.white,
@@ -152,11 +152,11 @@ class _NavBarClassState extends State<NavBarClass> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.all(4.0),
+                                padding: const EdgeInsets.all(2.0),
                                 child: Text(
                                   currentUser!.displayName ?? 'User',
                                   style: GoogleFonts.karla(
-                                    textStyle: TextStyle(
+                                    textStyle:GoogleFonts.montserrat(
                                       color:
                                           isDark ? Colors.white : Colors.black,
                                       fontWeight: FontWeight.bold,
@@ -166,14 +166,14 @@ class _NavBarClassState extends State<NavBarClass> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.all(4.0),
+                                padding: const EdgeInsets.all(1.0),
                                 child: Text(
                                   currentUser!.email != null &&
                                           currentUser!.email!.isNotEmpty
                                       ? currentUser!.email!
                                       : currentUser!.phoneNumber.toString(),
                                   style: GoogleFonts.karla(
-                                    textStyle: TextStyle(
+                                    textStyle: GoogleFonts.montserrat(
                                       color:
                                           isDark ? Colors.white : Colors.black,
                                       fontSize: 14,
@@ -312,7 +312,7 @@ class _NavBarClassState extends State<NavBarClass> {
                         child: Text(
                           "Log Out",
                           style: GoogleFonts.karla(
-                            textStyle: TextStyle(
+                            textStyle: GoogleFonts.montserrat(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 16,

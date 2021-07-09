@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:team_clone/Widget/carousel_item.dart';
 import 'package:team_clone/constants.dart';
 import 'package:team_clone/main.dart';
@@ -120,10 +121,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         horizontal: 35.0, vertical: 12),
                     child: Text(
                       'Login',
-                      style: TextStyle(
+                      style: GoogleFonts.montserrat(
                           color: Colors.white,
                           fontSize: 20,
-                          fontFamily: 'Montserrat',
                           fontWeight: FontWeight.w700),
                     ),
                   ),

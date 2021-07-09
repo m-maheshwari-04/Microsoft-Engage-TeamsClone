@@ -34,7 +34,7 @@ class _ViewNotePageState extends State<ViewNotePage> {
           iconTheme: IconThemeData(color: !isDark ? dark : Colors.white),
           title: Text(
             'Note',
-            style: TextStyle(color: !isDark ? dark : Colors.white),
+            style: GoogleFonts.montserrat(color: !isDark ? dark : Colors.white),
           ),
           actions: <Widget>[
             Spacer(),
@@ -88,7 +88,7 @@ class _ViewNotePageState extends State<ViewNotePage> {
                   left: 24.0, top: 36, bottom: 24, right: 24),
               child: Text(
                 widget.currentNote.content,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                style:GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.w500),
               ),
             )
           ],

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'dart:io';
 import 'package:path/path.dart';
@@ -142,7 +143,7 @@ class _SendImageState extends State<SendImage> {
                         onPressed: _cropImage,
                         child: Text(
                           'CROP',
-                          style: TextStyle(
+                          style: GoogleFonts.montserrat(
                             fontSize: 18,
                             color: Colors.white,
                           ),
@@ -159,7 +160,7 @@ class _SendImageState extends State<SendImage> {
                         },
                         child: Text(
                           'SEND',
-                          style: TextStyle(
+                          style:GoogleFonts.montserrat(
                             fontSize: 18,
                             color: Colors.white,
                           ),

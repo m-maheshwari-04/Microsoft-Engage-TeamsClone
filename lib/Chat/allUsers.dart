@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'chat.dart';
 import 'package:team_clone/constants.dart';
 import 'user_model.dart';
@@ -24,6 +25,8 @@ class _AllUsersState extends State<AllUsers> {
         } else {
           hash = user.uid + currentUser!.uid;
         }
+        hash = hash.toUpperCase();
+
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -46,16 +49,16 @@ class _AllUsersState extends State<AllUsers> {
               children: [
                 Text(
                   user.name,
-                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
+                  style:GoogleFonts.montserrat(fontSize: 15.0, fontWeight: FontWeight.w400),
                 ),
                 SizedBox(height: 2.0),
                 Text(user.id,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
+                    style: GoogleFonts.montserrat(
                         color: Colors.grey,
                         fontSize: 14.0,
-                        fontWeight: FontWeight.w400))
+                        fontWeight: FontWeight.w200))
               ],
             )),
             SizedBox(width: 8.0),
@@ -91,7 +94,7 @@ class _AllUsersState extends State<AllUsers> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: isDark ? dark : Colors.white,
-        appBar: AppBar(title: Text('New Chat')),
+        appBar: AppBar(title: Text('New Chat',style: GoogleFonts.montserrat(),)),
         body: Column(
           children: [
             Padding(
@@ -137,12 +140,12 @@ class _AllUsersState extends State<AllUsers> {
                           }
                           setState(() {});
                         },
-                        style: TextStyle(
+                        style: GoogleFonts.montserrat(
                             color: isDark ? light : Colors.white,
                             fontSize: 16.0),
                         decoration: InputDecoration(
                             hintText: 'Search...',
-                            hintStyle: TextStyle(
+                            hintStyle: GoogleFonts.montserrat(
                               color: isDark ? light : Colors.white,
                             ),
                             filled: false,

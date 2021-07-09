@@ -94,7 +94,7 @@ class _AddTaskState extends State<AddTask> {
         controller: controller,
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: TextStyle(fontSize: 16.sp, color: Colors.grey),
+          hintStyle: GoogleFonts.montserrat(fontSize: 16.sp, color: Colors.grey),
           contentPadding: const EdgeInsets.symmetric(vertical: 10.0),
           isDense: true,
           enabledBorder: UnderlineInputBorder(

@@ -55,13 +55,13 @@ class _CreateGroupState extends State<CreateGroup> {
               children: [
                 Text(
                   user.name,
-                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
+                  style: GoogleFonts.montserrat(fontSize: 16.0, fontWeight: FontWeight.w600),
                 ),
                 SizedBox(height: 2.0),
                 Text(user.id,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
+                    style:GoogleFonts.montserrat(
                         color: Colors.grey,
                         fontSize: 14.0,
                         fontWeight: FontWeight.w400))
@@ -93,7 +93,7 @@ class _CreateGroupState extends State<CreateGroup> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: isDark ? dark : Colors.white,
-        appBar: AppBar(title: Text('New Group Chat')),
+        appBar: AppBar(title: Text('New Group Chat',style: GoogleFonts.montserrat(),)),
         body: ProgressHUD(
           indicatorColor: isDark ? Colors.white : light,
           backgroundColor: Colors.transparent,
@@ -152,14 +152,14 @@ class _CreateGroupState extends State<CreateGroup> {
                         border: Border.all(color: Colors.black)),
                     child: TextFormField(
                       cursorColor: Colors.black,
-                      style: TextStyle(
+                      style:GoogleFonts.montserrat(
                         color: Colors.black,
                       ),
                       controller: groupName,
                       decoration: InputDecoration(
                         hintText: "Group name",
-                        hintStyle: TextStyle(color: Colors.black),
-                        labelStyle: TextStyle(color: Colors.black),
+                        hintStyle: GoogleFonts.montserrat(color: Colors.black),
+                        labelStyle:GoogleFonts.montserrat(color: Colors.black),
                         alignLabelWithHint: true,
                         contentPadding:
                             EdgeInsets.symmetric(vertical: 15, horizontal: 10),
@@ -219,7 +219,7 @@ class _CreateGroupState extends State<CreateGroup> {
                           progress.show();
 
                           String imgUrl = defaultGroup;
-                          String groupId = randomAlphaNumeric(18);
+                          String groupId = randomAlphaNumeric(18).toUpperCase();
 
                           if (pickedImage != null) {
                             final file = File(pickedImage!.path);

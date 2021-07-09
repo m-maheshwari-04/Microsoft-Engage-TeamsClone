@@ -90,7 +90,7 @@ class _NetworkCheckState extends State<NetworkCheck> {
                   ),
                   label: AutoSizeText('Retry',
                       style:
-                          TextStyle(color: light, fontWeight: FontWeight.w700)),
+                      GoogleFonts.montserrat(color: light, fontWeight: FontWeight.w700)),
                 ),
               ),
             )

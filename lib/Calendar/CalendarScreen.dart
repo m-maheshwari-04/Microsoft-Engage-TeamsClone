@@ -87,7 +87,7 @@ class _CalendarState extends State<Calendar> {
               calenderDate.toString(),
               style: GoogleFonts.montserrat(
                 fontSize: 14.sp,
-                color: Color(0xFF1E1D1E),
+                color: date == numDate ? Colors.white : Color(0xFF1E1D1E),
                 fontWeight: date == numDate ? FontWeight.w400 : FontWeight.w200,
               ),
             ),
@@ -160,7 +160,8 @@ class _CalendarState extends State<Calendar> {
                 value: value,
                 child: Text(
                   value,
-                  style: TextStyle(fontSize: 20, color: Colors.black),
+                  style:
+                      GoogleFonts.montserrat(fontSize: 20, color: Colors.black),
                 ),
               );
             }).toList(),
@@ -181,7 +182,8 @@ class _CalendarState extends State<Calendar> {
               value: value,
               child: new Text(
                 value,
-                style: TextStyle(fontSize: 20, color: Colors.black),
+                style:
+                    GoogleFonts.montserrat(fontSize: 20, color: Colors.black),
               ),
             );
           }).toList(),
@@ -235,11 +237,11 @@ class _CalendarState extends State<Calendar> {
           children: <Widget>[
             Text(
               name,
-              style: TextStyle(fontSize: 16),
+              style: GoogleFonts.montserrat(fontSize: 16),
             ),
             Text(
               time1,
-              style: TextStyle(fontSize: 16, color: Colors.pink),
+              style: GoogleFonts.montserrat(fontSize: 16, color: Colors.pink),
             )
           ],
         ),
@@ -248,7 +250,7 @@ class _CalendarState extends State<Calendar> {
           children: <Widget>[
             Text(
               profession,
-              style: TextStyle(fontWeight: FontWeight.w200),
+              style: GoogleFonts.montserrat(fontWeight: FontWeight.w200),
             ),
           ],
         ),
@@ -264,37 +266,7 @@ class _CalendarState extends State<Calendar> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Stack(
-              children: <Widget>[
-                Container(
-                    padding: EdgeInsets.only(
-                        top: 42.h, left: 42.w, right: 42.w, bottom: 20.h),
-                    margin: EdgeInsets.only(top: 208.h),
-                    child: Card(
-                      elevation: 18.0,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                      color: Colors.white,
-                      child: Container(
-                        height: 100.h,
-                      ),
-                    )),
-                Container(
-                    padding:
-                        EdgeInsets.only(top: 28.h, left: 28.w, right: 28.w),
-                    margin: EdgeInsets.only(top: 204.h),
-                    child: Card(
-                      elevation: 18.0,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                      color: Colors.white,
-                      child: Container(
-                        height: 100.h,
-                      ),
-                    )),
-                Container(child: calender()),
-              ],
-            ),
+            calender(),
             Container(
               padding: EdgeInsets.only(left: 24.w, bottom: 15.h),
               child: Row(
@@ -306,13 +278,14 @@ class _CalendarState extends State<Calendar> {
                             curDate.year == year
                         ? "Today"
                         : "$date ${months[month - 1]} $year",
-                    style: TextStyle(
+                    style: GoogleFonts.montserrat(
                       fontSize: 16,
                     ),
                   ),
                   Text(
                     "____________________________________________                             ",
-                    style: TextStyle(fontSize: 4, fontWeight: FontWeight.w400),
+                    style: GoogleFonts.montserrat(
+                        fontSize: 4, fontWeight: FontWeight.w400),
                   ),
                   GestureDetector(
                       onTap: () async {

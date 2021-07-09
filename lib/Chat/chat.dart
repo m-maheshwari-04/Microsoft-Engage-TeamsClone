@@ -3,6 +3,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:team_clone/Chat/ChatRoom/FirstMessage.dart';
 import 'ChatRoom/ImageViewingScreen.dart';
@@ -100,7 +101,7 @@ class _ChatState extends State<Chat> {
                   widget.user.name,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
+                  style: GoogleFonts.montserrat(
                       fontSize: 16.sp, color: !isDark ? dark : Colors.white),
                 ),
               ),
@@ -155,7 +156,7 @@ class _ChatState extends State<Chat> {
                     value: choice,
                     child: Text(
                       choice,
-                      style: TextStyle(
+                      style: GoogleFonts.montserrat(
                           color: isDark ? Colors.black : Colors.white),
                     ),
                   );
@@ -386,12 +387,12 @@ class Bubble extends StatelessWidget {
                     Text(
                       message,
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white, fontSize: 16),
+                      style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16),
                     ),
                     Text(
                       'Tap to join the meeting',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: GoogleFonts.montserrat(
                           color: Colors.white,
                           fontSize: 14,
                           fontWeight: FontWeight.w200),
@@ -417,7 +418,7 @@ class Bubble extends StatelessWidget {
                     hash.length == 18 && !isMe
                         ? Text(
                             sender,
-                            style: TextStyle(fontSize: 12.0),
+                            style: GoogleFonts.montserrat(fontSize: 12.0),
                           )
                         : Container(),
                     image
@@ -544,7 +545,7 @@ class Bubble extends StatelessWidget {
                                     message,
                                     textAlign:
                                         isMe ? TextAlign.end : TextAlign.start,
-                                    style: TextStyle(
+                                    style: GoogleFonts.montserrat(
                                       color:
                                           isMe ? Colors.white : Colors.blueGrey,
                                     ),
@@ -573,7 +574,7 @@ class Bubble extends StatelessWidget {
           formatTime('0' + time.hour.toString()) +
           ' : ' +
           formatTime('0' + time.minute.toString()),
-      style: TextStyle(
+      style: GoogleFonts.montserrat(
         fontSize: 9.0,
         fontWeight: FontWeight.w300,
         color: isMe ? Colors.white : Colors.blueGrey,

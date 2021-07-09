@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CarouselItem extends StatelessWidget {
   CarouselItem(
@@ -25,8 +26,7 @@ class CarouselItem extends StatelessWidget {
               Text(
                 title,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Montserrat',
+                style: GoogleFonts.montserrat(
                   fontWeight: FontWeight.w700,
                   fontSize: 25.0,
                 ),
@@ -44,8 +44,7 @@ class CarouselItem extends StatelessWidget {
           padding: EdgeInsets.only(top: 25.0),
           child: Text(
             subtitle,
-            style: TextStyle(
-              fontFamily: 'Montserrat',
+            style: GoogleFonts.montserrat(
               fontSize: 18.0,
             ),
             textAlign: TextAlign.center,

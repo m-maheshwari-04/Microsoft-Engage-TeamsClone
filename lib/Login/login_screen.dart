@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:ui';
 import 'package:email_auth/email_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,7 +18,6 @@ import 'package:team_clone/main.dart';
 ScrollController _scrollController = ScrollController();
 bool showError = false;
 var progress;
-
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -197,7 +195,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                           padding: EdgeInsets.all(4),
                           child: Text(
                             '+91',
-                            style: TextStyle(color: Colors.grey),
+                            style: GoogleFonts.montserrat(color: Colors.grey),
                           ),
                         ),
                       ),
@@ -225,29 +223,23 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
         SizedBox(
           height: 30.h,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            redirectSignInButton(img: 'google_logo.png'),
-            SizedBox(width: 20),
-            redirectSignInButton(img: 'microsoft_logo.png'),
-          ],
-        ),
+        googleSignInButton(),
       ],
     );
   }
 
-  Widget redirectSignInButton({required String img}) {
+  Widget googleSignInButton() {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
+      padding:EdgeInsets.only(left: 20.w,right:20.w),
       child: OutlinedButton(
         style: ButtonStyle(
-          shape: MaterialStateProperty.all(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(40),
+            shape: MaterialStateProperty.all(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
-          ),
-        ),
+            backgroundColor:
+                MaterialStateColor.resolveWith((states) => Colors.white)),
         onPressed: () async {
           progress.show();
           User? user = await Authentication.signInWithGoogle(context: context);
@@ -261,10 +253,23 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
           }
         },
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-          child: Image(
-            image: AssetImage("images/$img"),
-            height: 35.0,
+          padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image(
+                image: AssetImage("images/google_logo.png"),
+                height: 25.0,
+              ),
+              Text(
+                "    Continue with Google",
+                style: GoogleFonts.montserrat(
+                  color:light,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 18.0,
+                ),
+              ),
+            ],
           ),
         ),
       ),

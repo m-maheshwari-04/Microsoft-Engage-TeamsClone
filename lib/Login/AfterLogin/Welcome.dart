@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:team_clone/Widget/welcomeList.dart';
 import 'package:team_clone/constants.dart';
 import 'package:team_clone/Login/AfterLogin/Profile.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Welcome extends StatefulWidget {
   @override
@@ -38,7 +39,7 @@ class _WelcomeState extends State<Welcome> {
             child: Text(
               "Welcome to Teams",
               style: GoogleFonts.montserrat(
-                textStyle: TextStyle(
+                textStyle: GoogleFonts.montserrat(
                     fontSize: 24,
                     color: isDark ? Colors.white : Colors.black,
                     fontWeight: FontWeight.w500),
@@ -46,33 +47,11 @@ class _WelcomeState extends State<Welcome> {
             ),
           ),
           Container(
+            padding: EdgeInsets.only(left: 28.w),
             width: double.infinity,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Padding(
-                //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                //   child: Column(
-                //     children: [
-                //       Padding(
-                //         padding:
-                //             const EdgeInsets.only(left: 16.0, right: 32.0),
-                //         child: Container(
-                //           width: MediaQuery.of(context).size.width * 0.8,
-                //           child: Text(
-                //             "Here is your time-table for ",
-                //             style: GoogleFonts.montserrat(
-                //               textStyle: TextStyle(
-                //                 color: isdark ? Colors.white : Colors.black,
-                //                 fontSize: 15,
-                //               ),
-                //             ),
-                //           ),
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
                 WelcomeList(
                   img: features[0][0],
                   heading: features[0][1],

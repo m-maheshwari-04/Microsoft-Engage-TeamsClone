@@ -25,8 +25,13 @@ class JitsiMeeting {
     var options = JitsiMeetingOptions(room: roomCode)
       ..serverURL = serverUrl
       ..subject = roomName
-      ..userDisplayName = currentUser!.displayName ?? 'Anonymous'
-      ..userEmail = currentUser!.email
+      ..userDisplayName =
+          currentUser!.email != null && currentUser!.email!.isNotEmpty
+              ? currentUser!.email
+              : currentUser!.phoneNumber
+      ..userEmail = currentUser!.email != null && currentUser!.email!.isNotEmpty
+          ? currentUser!.email
+          : currentUser!.phoneNumber
       ..audioOnly = false
       ..audioMuted = !audio
       ..videoMuted = !video
@@ -37,7 +42,12 @@ class JitsiMeeting {
         "height": "100%",
         "enableWelcomePage": false,
         "chromeExtensionBanner": null,
-        "userInfo": {"displayName": currentUser!.displayName ?? 'Anonymous'}
+        "userInfo": {
+          "displayName":
+              currentUser!.email != null && currentUser!.email!.isNotEmpty
+                  ? currentUser!.email
+                  : currentUser!.phoneNumber ?? 'Anonymous'
+        }
       };
 
     await JitsiMeet.joinMeeting(
@@ -70,6 +80,7 @@ class JitsiMeeting {
         roomCode.substring(3, 5) +
         '-' +
         roomCode.substring(5, 8);
+    roomCode = roomCode.toUpperCase();
 
     if (newMeeting) {
       FirebaseFirestore.instance
@@ -91,7 +102,6 @@ class JitsiMeeting {
       FirebaseFirestore.instance.collection('group').doc(groupId).set({
         'name': room.text,
         'id': currentUser!.email != null && currentUser!.email!.isNotEmpty
-
             ? currentUser!.email
             : currentUser!.phoneNumber,
         'img': defaultGroup,
@@ -190,8 +200,7 @@ class JitsiMeeting {
                                   title: 'Team Clone',
                                   text:
                                       'To join the meeting on Team-Clone use the code \n\n$roomCode',
-                                  linkUrl:
-                                      'https://bit.ly/3hkQhmV',
+                                  linkUrl: 'https://bit.ly/3hkQhmV',
                                   chooserTitle: 'Example Chooser Title');
                             },
                             onTapDown: (value) {
@@ -225,14 +234,14 @@ class JitsiMeeting {
                           border: Border.all(color: light)),
                       child: TextFormField(
                         cursorColor: light,
-                        style: TextStyle(
+                        style: GoogleFonts.montserrat(
                           color: light,
                         ),
                         controller: room,
                         decoration: InputDecoration(
                           hintText: newMeeting ? "Room Name" : "Room Code",
-                          hintStyle: TextStyle(color: Colors.grey),
-                          labelStyle: TextStyle(color: light),
+                          hintStyle: GoogleFonts.montserrat(color: Colors.grey),
+                          labelStyle: GoogleFonts.montserrat(color: light),
                           alignLabelWithHint: true,
                           contentPadding:
                               EdgeInsets.symmetric(vertical: 6, horizontal: 10),
@@ -252,7 +261,7 @@ class JitsiMeeting {
                       children: [
                         Text(
                           "Audio",
-                          style: TextStyle(fontSize: 16),
+                          style: GoogleFonts.montserrat(fontSize: 16),
                         ),
                         Transform.scale(
                           scale: 0.8,
@@ -276,7 +285,7 @@ class JitsiMeeting {
                       children: [
                         Text(
                           "Video",
-                          style: TextStyle(fontSize: 16),
+                          style: GoogleFonts.montserrat(fontSize: 16),
                         ),
                         Transform.scale(
                           scale: 0.8,
@@ -351,6 +360,7 @@ class JitsiMeeting {
       toast("Invalid room code");
       return;
     }
+    roomCode = roomCode.toUpperCase();
     FirebaseFirestore.instance
         .collection('Jitsi')
         .doc('roomId')

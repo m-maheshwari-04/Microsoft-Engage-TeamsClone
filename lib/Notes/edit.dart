@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:flutter/painting.dart' as prefix0;
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:team_clone/constants.dart';
@@ -53,7 +52,7 @@ class _EditNotePageState extends State<EditNotePage> {
           iconTheme: IconThemeData(color: !isDark ? dark : Colors.white),
           title: Text(
             'Note',
-            style: TextStyle(color: !isDark ? dark : Colors.white),
+            style: GoogleFonts.montserrat(color: !isDark ? dark : Colors.white),
           ),
           actions: <Widget>[
             Spacer(),
@@ -94,7 +93,7 @@ class _EditNotePageState extends State<EditNotePage> {
                 ),
                 label: Text(
                   'SAVE',
-                  style: TextStyle(letterSpacing: 1),
+                  style: GoogleFonts.montserrat(letterSpacing: 1),
                 ),
                 onPressed: handleSave,
               ),
@@ -145,10 +144,11 @@ class _EditNotePageState extends State<EditNotePage> {
                     isModified = true;
                   });
                 },
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                style: GoogleFonts.montserrat(
+                    fontSize: 18, fontWeight: FontWeight.w500),
                 decoration: InputDecoration.collapsed(
                   hintText: 'Start typing...',
-                  hintStyle: TextStyle(
+                  hintStyle: GoogleFonts.montserrat(
                       color: Colors.grey.shade400,
                       fontSize: 18,
                       fontWeight: FontWeight.w500),
@@ -206,7 +206,7 @@ class _EditNotePageState extends State<EditNotePage> {
               actions: <Widget>[
                 FlatButton(
                   child: Text('CANCEL',
-                      style: TextStyle(
+                      style: GoogleFonts.montserrat(
                           color: Theme.of(context).primaryColor,
                           fontWeight: FontWeight.w500,
                           letterSpacing: 1)),
@@ -216,7 +216,7 @@ class _EditNotePageState extends State<EditNotePage> {
                 ),
                 FlatButton(
                   child: Text('DELETE',
-                      style: prefix0.TextStyle(
+                      style: GoogleFonts.montserrat(
                           color: Colors.red.shade300,
                           fontWeight: FontWeight.w500,
                           letterSpacing: 1)),

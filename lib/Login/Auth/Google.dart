@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:team_clone/Widget/Toast.dart';
 import 'package:team_clone/constants.dart';
@@ -13,7 +14,7 @@ class Authentication {
       backgroundColor: Colors.black,
       content: Text(
         content,
-        style: TextStyle(color: Colors.redAccent, letterSpacing: 0.5),
+        style: GoogleFonts.montserrat(color: Colors.redAccent, letterSpacing: 0.5),
       ),
     );
   }

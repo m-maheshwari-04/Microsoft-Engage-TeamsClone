@@ -1,6 +1,7 @@
 import 'package:email_auth/email_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pin_put/pin_put.dart';
 import 'package:team_clone/constants.dart';
 import 'package:team_clone/Login/AfterLogin/Welcome.dart';
@@ -31,7 +32,7 @@ class _OTPScreenState extends State<OTPScreen> {
     return Scaffold(
       backgroundColor: isDark ? dark : Colors.white,
       appBar: AppBar(
-        title: Text('OTP Verification'),
+        title: Text('OTP Verification',style: GoogleFonts.montserrat())
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -46,7 +47,7 @@ class _OTPScreenState extends State<OTPScreen> {
                 widget.password.isEmpty
                     ? 'Verify +91 ${widget.phone}'
                     : 'Verify your email ${widget.email}',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                style:GoogleFonts.montserrat(fontWeight: FontWeight.bold, fontSize: 24),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -62,7 +63,7 @@ class _OTPScreenState extends State<OTPScreen> {
             padding: const EdgeInsets.all(30.0),
             child: PinPut(
               fieldsCount: 6,
-              textStyle: const TextStyle(fontSize: 25.0, color: Colors.black),
+              textStyle: GoogleFonts.montserrat(fontSize: 25.0, color: Colors.black),
               eachFieldWidth: 40.0,
               eachFieldHeight: 55.0,
               focusNode: _pinPutFocusNode,
@@ -111,7 +112,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                 borderRadius: BorderRadius.circular(12)),
                             color: !isDark ? Colors.white : dark,
                             child: Text("1",
-                                style: TextStyle(
+                                style:GoogleFonts.montserrat(
                                     color:
                                         !isDark ? Colors.black : Colors.white,
                                     fontSize: 25.0,
@@ -131,7 +132,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                 borderRadius: BorderRadius.circular(12)),
                             color: !isDark ? Colors.white : dark,
                             child: Text("2",
-                                style: TextStyle(
+                                style:GoogleFonts.montserrat(
                                     color:
                                         !isDark ? Colors.black : Colors.white,
                                     fontSize: 25.0,
@@ -150,7 +151,7 @@ class _OTPScreenState extends State<OTPScreen> {
                             padding: EdgeInsets.symmetric(vertical: 10),
                             color: !isDark ? Colors.white : dark,
                             child: Text("3",
-                                style: TextStyle(
+                                style:GoogleFonts.montserrat(
                                     color:
                                         !isDark ? Colors.black : Colors.white,
                                     fontSize: 25.0,
@@ -181,7 +182,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                 borderRadius: BorderRadius.circular(12)),
                             color: !isDark ? Colors.white : dark,
                             child: Text("4",
-                                style: TextStyle(
+                                style:GoogleFonts.montserrat(
                                     color:
                                         !isDark ? Colors.black : Colors.white,
                                     fontSize: 25.0,
@@ -200,7 +201,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                 borderRadius: BorderRadius.circular(12)),
                             color: !isDark ? Colors.white : dark,
                             child: Text("5",
-                                style: TextStyle(
+                                style:GoogleFonts.montserrat(
                                     color:
                                         !isDark ? Colors.black : Colors.white,
                                     fontSize: 25.0,
@@ -219,7 +220,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                 borderRadius: BorderRadius.circular(12)),
                             color: !isDark ? Colors.white : dark,
                             child: Text("6",
-                                style: TextStyle(
+                                style:GoogleFonts.montserrat(
                                     color:
                                         !isDark ? Colors.black : Colors.white,
                                     fontSize: 25.0,
@@ -250,7 +251,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                 borderRadius: BorderRadius.circular(12)),
                             color: !isDark ? Colors.white : dark,
                             child: Text("7",
-                                style: TextStyle(
+                                style: GoogleFonts.montserrat(
                                     color:
                                         !isDark ? Colors.black : Colors.white,
                                     fontSize: 25.0,
@@ -270,7 +271,7 @@ class _OTPScreenState extends State<OTPScreen> {
                             padding: EdgeInsets.symmetric(vertical: 10),
                             color: !isDark ? Colors.white : dark,
                             child: Text("8",
-                                style: TextStyle(
+                                style:GoogleFonts.montserrat(
                                     color:
                                         !isDark ? Colors.black : Colors.white,
                                     fontSize: 25.0,
@@ -289,7 +290,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                 borderRadius: BorderRadius.circular(12)),
                             color: !isDark ? Colors.white : dark,
                             child: Text("9",
-                                style: TextStyle(
+                                style: GoogleFonts.montserrat(
                                     color:
                                         !isDark ? Colors.black : Colors.white,
                                     fontSize: 25.0,
@@ -341,7 +342,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                 borderRadius: BorderRadius.circular(12)),
                             color: !isDark ? Colors.white : dark,
                             child: Text("0",
-                                style: TextStyle(
+                                style:GoogleFonts.montserrat(
                                     color:
                                         !isDark ? Colors.black : Colors.white,
                                     fontSize: 25.0,

@@ -39,7 +39,7 @@ class _NotesPageState extends State<NotesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: isDark ? dark : Colors.white,
-      appBar: AppBar(title: Text('Notes'), actions: <Widget>[
+      appBar: AppBar(title: Text('Notes',style: GoogleFonts.montserrat()), actions: <Widget>[
         GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -81,7 +81,7 @@ class _NotesPageState extends State<NotesPage> {
             alignment: Alignment.center,
             child: isFlagOn
                 ? Text('Only showing notes marked important'.toUpperCase(),
-                    style: TextStyle(
+                    style:GoogleFonts.montserrat(
                         fontSize: 12,
                         color: isDark ? Colors.white : light,
                         fontWeight: FontWeight.w500))
@@ -179,12 +179,12 @@ class _NotesPageState extends State<NotesPage> {
                         onChanged: (value) {
                           handleSearch(value);
                         },
-                        style: TextStyle(
+                        style: GoogleFonts.montserrat(
                             color: isDark ? light : Colors.white,
                             fontSize: 16.0),
                         decoration: InputDecoration(
                             hintText: 'Search...',
-                            hintStyle: TextStyle(
+                            hintStyle: GoogleFonts.montserrat(
                               color: isDark ? light : Colors.white,
                             ),
                             filled: false,
