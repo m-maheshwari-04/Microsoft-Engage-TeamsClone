@@ -2,6 +2,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:team_clone/Notes/models.dart';
 
+/// Database for storing user notes in device storage
 class NotesDatabaseService {
   late String path;
 
@@ -18,6 +19,7 @@ class NotesDatabaseService {
     return _database!;
   }
 
+  /// Initializing database if it is not already initialized
   init() async {
     String path = await getDatabasesPath();
     path = join(path, 'notes.db');
@@ -30,6 +32,7 @@ class NotesDatabaseService {
     });
   }
 
+  /// getting all notes from database
   Future<List<NotesModel>> getNotesFromDB() async {
     final db = await database;
     List<NotesModel> notesList = [];
@@ -43,6 +46,7 @@ class NotesDatabaseService {
     return notesList;
   }
 
+  /// Update already existing notes
   updateNoteInDB(NotesModel updatedNote) async {
     final db = await database;
     await db.update('Notes', updatedNote.toMap(),
@@ -50,12 +54,14 @@ class NotesDatabaseService {
     print('Note updated: ${updatedNote.title} ${updatedNote.content}');
   }
 
+  /// Delete a note from database
   deleteNoteInDB(NotesModel noteToDelete) async {
     final db = await database;
     await db.delete('Notes', where: '_id = ?', whereArgs: [noteToDelete.id]);
     print('Note deleted');
   }
 
+  /// Add new note
   Future<NotesModel> addNoteInDB(NotesModel newNote) async {
     final db = await database;
     if (newNote.title.trim().isEmpty) newNote.title = 'Untitled Note';

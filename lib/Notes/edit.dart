@@ -5,11 +5,16 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:team_clone/constants.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'database.dart';
 import 'models.dart';
 
+/// Implements a flutter widget that renders the editing/new note screen
 class EditNotePage extends StatefulWidget {
+  /// function passed to get latest data from database
   final Function() triggerRefetch;
+
+  /// Used when we are editing a note
   final NotesModel? existingNote;
   EditNotePage({required this.triggerRefetch, this.existingNote});
 
@@ -18,6 +23,7 @@ class EditNotePage extends StatefulWidget {
 }
 
 class _EditNotePageState extends State<EditNotePage> {
+  /// Used to check if any changes are made
   bool isModified = false;
   bool isNoteNew = true;
   FocusNode titleFocus = FocusNode();
@@ -30,6 +36,8 @@ class _EditNotePageState extends State<EditNotePage> {
   @override
   void initState() {
     super.initState();
+
+    /// Editing a note or creating a new note
     if (widget.existingNote == null) {
       currentNote = NotesModel(
           content: '', title: '', date: DateTime.now(), isImportant: false);
@@ -42,17 +50,16 @@ class _EditNotePageState extends State<EditNotePage> {
     contentController.text = currentNote!.content;
   }
 
+  /// UI of Editing screen
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: isDark ? dark : Colors.white,
+        backgroundColor: dark,
         appBar: AppBar(
           elevation: 0.4,
-          backgroundColor: isDark ? dark : Colors.white,
-          iconTheme: IconThemeData(color: !isDark ? dark : Colors.white),
           title: Text(
             'Note',
-            style: GoogleFonts.montserrat(color: !isDark ? dark : Colors.white),
+            style: GoogleFonts.montserrat(),
           ),
           actions: <Widget>[
             Spacer(),
@@ -60,7 +67,6 @@ class _EditNotePageState extends State<EditNotePage> {
               tooltip: 'Mark note as important',
               icon: Icon(
                   currentNote!.isImportant ? Icons.flag : Icons.outlined_flag),
-              color: !isDark ? dark : Colors.white,
               onPressed: titleController.text.trim().isNotEmpty &&
                       contentController.text.trim().isNotEmpty
                   ? toggleImportant
@@ -69,31 +75,30 @@ class _EditNotePageState extends State<EditNotePage> {
             IconButton(
               tooltip: 'Delete',
               icon: Icon(Icons.delete_outline),
-              color: !isDark ? dark : Colors.white,
               onPressed: () {
                 handleDelete();
               },
             ),
             AnimatedContainer(
-              margin: EdgeInsets.only(left: 10),
               duration: Duration(milliseconds: 200),
-              width: isModified ? 100 : 0,
+              width: isModified ? 105.w : 0,
               height: 42,
               curve: Curves.decelerate,
               child: RaisedButton.icon(
-                color: light,
+                color: primary,
                 textColor: Colors.white,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(100),
-                        bottomLeft: Radius.circular(100))),
+                        topLeft: Radius.circular(80),
+                        bottomLeft: Radius.circular(80))),
                 icon: Icon(
                   Icons.done,
                   color: Colors.white,
                 ),
                 label: Text(
                   'SAVE',
-                  style: GoogleFonts.montserrat(letterSpacing: 1),
+                  style: GoogleFonts.montserrat(
+                      letterSpacing: 1, color: Colors.white),
                 ),
                 onPressed: handleSave,
               ),
@@ -105,6 +110,7 @@ class _EditNotePageState extends State<EditNotePage> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: TextField(
+                cursorColor: isDark ? Colors.white70 : Colors.black87,
                 focusNode: titleFocus,
                 autofocus: true,
                 controller: titleController,
@@ -135,6 +141,7 @@ class _EditNotePageState extends State<EditNotePage> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: TextField(
+                cursorColor: isDark ? Colors.white70 : Colors.black87,
                 focusNode: contentFocus,
                 controller: contentController,
                 keyboardType: TextInputType.multiline,
@@ -160,6 +167,7 @@ class _EditNotePageState extends State<EditNotePage> {
         ));
   }
 
+  /// Note is saved in database
   void handleSave() async {
     setState(() {
       currentNote!.title = titleController.text;
@@ -181,16 +189,16 @@ class _EditNotePageState extends State<EditNotePage> {
     widget.triggerRefetch();
     titleFocus.unfocus();
     contentFocus.unfocus();
-    Navigator.pop(context);
+    contentFocus.unfocus();
   }
 
   void toggleImportant() {
     setState(() {
       currentNote!.isImportant = !currentNote!.isImportant;
     });
-    handleSave();
   }
 
+  /// Delete note from database
   void handleDelete() async {
     if (isNoteNew) {
       Navigator.pop(context);
@@ -201,15 +209,14 @@ class _EditNotePageState extends State<EditNotePage> {
             return AlertDialog(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)),
+              backgroundColor: light,
               title: Text('Delete Note'),
               content: Text('This note will be deleted permanently'),
               actions: <Widget>[
                 FlatButton(
                   child: Text('CANCEL',
                       style: GoogleFonts.montserrat(
-                          color: Theme.of(context).primaryColor,
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 1)),
+                          fontWeight: FontWeight.w500, letterSpacing: 1)),
                   onPressed: () {
                     Navigator.pop(context);
                   },
@@ -217,7 +224,7 @@ class _EditNotePageState extends State<EditNotePage> {
                 FlatButton(
                   child: Text('DELETE',
                       style: GoogleFonts.montserrat(
-                          color: Colors.red.shade300,
+                          color: primary,
                           fontWeight: FontWeight.w500,
                           letterSpacing: 1)),
                   onPressed: () async {

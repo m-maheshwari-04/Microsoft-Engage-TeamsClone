@@ -1,3 +1,6 @@
+/// Notes model
+/// keep related information of a note together
+///
 class NotesModel {
   int? id;
   late String title;

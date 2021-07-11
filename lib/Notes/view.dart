@@ -9,8 +9,12 @@ import 'package:team_clone/Notes/edit.dart';
 import 'package:team_clone/constants.dart';
 import 'models.dart';
 
+/// Implements a flutter widget that renders the view note screen
 class ViewNotePage extends StatefulWidget {
+  /// function passed to get latest data from database
   final Function() triggerRefetch;
+
+  /// Used when we are editing a note
   final NotesModel currentNote;
   ViewNotePage({required this.triggerRefetch, required this.currentNote});
 
@@ -19,22 +23,16 @@ class ViewNotePage extends StatefulWidget {
 }
 
 class _ViewNotePageState extends State<ViewNotePage> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
+  /// UI for viewing a note
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: isDark ? dark : Colors.white,
+        backgroundColor: dark,
         appBar: AppBar(
           elevation: 0.4,
-          backgroundColor: isDark ? dark : Colors.white,
-          iconTheme: IconThemeData(color: !isDark ? dark : Colors.white),
           title: Text(
             'Note',
-            style: GoogleFonts.montserrat(color: !isDark ? dark : Colors.white),
+            style: GoogleFonts.montserrat(),
           ),
           actions: <Widget>[
             Spacer(),
@@ -88,7 +86,8 @@ class _ViewNotePageState extends State<ViewNotePage> {
                   left: 24.0, top: 36, bottom: 24, right: 24),
               child: Text(
                 widget.currentNote.content,
-                style:GoogleFonts.montserrat(fontSize: 18, fontWeight: FontWeight.w500),
+                style: GoogleFonts.montserrat(
+                    fontSize: 18, fontWeight: FontWeight.w500),
               ),
             )
           ],
@@ -125,13 +124,22 @@ class _ViewNotePageState extends State<ViewNotePage> {
           return AlertDialog(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            backgroundColor: light,
             title: Text('Delete Note'),
             content: Text('This note will be deleted permanently'),
             actions: <Widget>[
               FlatButton(
+                child: Text('CANCEL',
+                    style: GoogleFonts.montserrat(
+                        fontWeight: FontWeight.w500, letterSpacing: 1)),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              FlatButton(
                 child: Text('DELETE',
                     style: GoogleFonts.montserrat(
-                        color: Colors.red.shade300,
+                        color: primary,
                         fontWeight: FontWeight.w500,
                         letterSpacing: 1)),
                 onPressed: () async {
@@ -142,16 +150,6 @@ class _ViewNotePageState extends State<ViewNotePage> {
                   Navigator.pop(context);
                 },
               ),
-              FlatButton(
-                child: Text('CANCEL',
-                    style: GoogleFonts.montserrat(
-                        color: Theme.of(context).primaryColor,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 1)),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              )
             ],
           );
         });

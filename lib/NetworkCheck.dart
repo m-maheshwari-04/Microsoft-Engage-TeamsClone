@@ -9,6 +9,10 @@ import 'package:team_clone/main.dart';
 import 'package:team_clone/Login/login_screen.dart';
 import 'package:team_clone/Login/welcome_screen.dart';
 
+/// Implements a flutter widget that renders the Network Screen
+///
+/// This screen is redirected when internet is not available on the device
+
 class NetworkCheck extends StatefulWidget {
   @override
   _NetworkCheckState createState() => _NetworkCheckState();
@@ -23,10 +27,13 @@ class _NetworkCheckState extends State<NetworkCheck> {
     isDark = themeChangeProvider.darkTheme;
   }
 
+  /// Retry button to check if internet is available now or not
   Future<void> retry() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
     var connectivityResult = await (Connectivity().checkConnectivity());
+
+    /// User is redirected according to network availability
     if (connectivityResult == ConnectivityResult.mobile ||
         connectivityResult == ConnectivityResult.wifi) {
       if (sharedPreferences.getBool('shownWelcomeScreen') ?? false) {
@@ -47,7 +54,7 @@ class _NetworkCheckState extends State<NetworkCheck> {
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     return Scaffold(
-      backgroundColor: !isDark ? Colors.white : dark,
+      backgroundColor: dark,
       body: Container(
         child: Column(
           children: [
@@ -68,9 +75,7 @@ class _NetworkCheckState extends State<NetworkCheck> {
                   maxLines: 3,
                   softWrap: true,
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.montserrat(
-                      fontSize: 18,
-                      color: isDark ? Colors.white : Colors.black)),
+                  style: GoogleFonts.montserrat(fontSize: 18)),
             ),
             Padding(
               padding: const EdgeInsets.all(50.0),
@@ -78,7 +83,7 @@ class _NetworkCheckState extends State<NetworkCheck> {
                 height: 40,
                 child: RaisedButton.icon(
                   elevation: 1,
-                  color: Colors.white,
+                  color: primary,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
                   onPressed: () {
@@ -86,11 +91,11 @@ class _NetworkCheckState extends State<NetworkCheck> {
                   },
                   icon: Icon(
                     Icons.autorenew_outlined,
-                    color: light,
+                    color: Colors.white,
                   ),
                   label: AutoSizeText('Retry',
-                      style:
-                      GoogleFonts.montserrat(color: light, fontWeight: FontWeight.w700)),
+                      style: GoogleFonts.montserrat(
+                          color: Colors.white, fontWeight: FontWeight.w700)),
                 ),
               ),
             )

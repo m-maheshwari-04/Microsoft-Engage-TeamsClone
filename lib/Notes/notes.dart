@@ -10,6 +10,11 @@ import 'edit.dart';
 import 'models.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+/// Implements a flutter widget that renders the notes screen
+///
+/// - List of notes from database
+/// - New note add
+/// - Tap to view complete note
 class NotesPage extends StatefulWidget {
   @override
   _NotesPageState createState() => _NotesPageState();
@@ -22,6 +27,7 @@ class _NotesPageState extends State<NotesPage> {
 
   bool isSearchEmpty = true;
 
+  /// fetch notes from database
   notesFromDB() async {
     var fetchedNotes = await NotesDatabaseService.db.getNotesFromDB();
     notesList = fetchedNotes;
@@ -38,41 +44,26 @@ class _NotesPageState extends State<NotesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: isDark ? dark : Colors.white,
-      appBar: AppBar(title: Text('Notes',style: GoogleFonts.montserrat()), actions: <Widget>[
-        GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
+      backgroundColor: dark,
+      appBar: AppBar(
+        title: Text('Notes', style: GoogleFonts.montserrat()),
+      ),
 
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                  builder: (context) =>
-                      EditNotePage(triggerRefetch: notesFromDB)),
-            );
-          },
-          child: Container(
-            margin: EdgeInsets.all(6),
-            padding: EdgeInsets.all(2),
-            decoration: BoxDecoration(
-              border: Border.all(width: 2),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(
-                  Icons.add,
-                  size: 14,
-                ),
-                Text(
-                  'Add new note',
-                  style: GoogleFonts.montserrat(fontSize: 14),
-                )
-              ],
-            ),
-          ),
-        ),
-      ]),
+      /// For adding new note
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add, color: Colors.white),
+        backgroundColor: primary,
+        foregroundColor: primary,
+        onPressed: () {
+          FocusScope.of(context).unfocus();
+
+          Navigator.of(context).push(
+            MaterialPageRoute(
+                builder: (context) =>
+                    EditNotePage(triggerRefetch: notesFromDB)),
+          );
+        },
+      ),
       body: Column(
         children: [
           searchFilter(),
@@ -81,10 +72,8 @@ class _NotesPageState extends State<NotesPage> {
             alignment: Alignment.center,
             child: isFlagOn
                 ? Text('Only showing notes marked important'.toUpperCase(),
-                    style:GoogleFonts.montserrat(
-                        fontSize: 12,
-                        color: isDark ? Colors.white : light,
-                        fontWeight: FontWeight.w500))
+                    style: GoogleFonts.montserrat(
+                        fontSize: 12, fontWeight: FontWeight.w500))
                 : Container(),
           ),
           notesList.length == 0
@@ -126,6 +115,7 @@ class _NotesPageState extends State<NotesPage> {
     );
   }
 
+  /// Search in notes present in database
   Widget searchFilter() {
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 10),
@@ -142,10 +132,10 @@ class _NotesPageState extends State<NotesPage> {
               width: 45.w,
               child: Icon(
                 isFlagOn ? Icons.flag : Icons.flag_outlined,
-                color: isFlagOn ? light : Colors.grey.shade500,
+                color: isFlagOn ? Colors.white : Colors.grey.shade500,
               ),
               decoration: BoxDecoration(
-                  color: isFlagOn ? Colors.white : Colors.transparent,
+                  color: isFlagOn ? primary : Colors.transparent,
                   border: Border.all(
                     width: isFlagOn ? 0 : 1,
                   ),
@@ -159,34 +149,29 @@ class _NotesPageState extends State<NotesPage> {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.0),
                 decoration: BoxDecoration(
-                    color: !isDark ? dark : Colors.white,
-                    borderRadius: BorderRadius.circular(30.0)),
+                    color: light, borderRadius: BorderRadius.circular(30.0)),
                 child: Row(
                   children: <Widget>[
                     Container(
                         padding: EdgeInsets.all(6.0),
-                        decoration: BoxDecoration(
-                            color: Color(0xfff3f2ee), shape: BoxShape.circle),
+                        decoration:
+                            BoxDecoration(color: dark, shape: BoxShape.circle),
                         child: Icon(
                           Icons.search,
                           size: 16.0,
-                          color: Theme.of(context).primaryColor,
                         )),
                     SizedBox(width: 12.0),
                     Expanded(
                       child: TextField(
+                        cursorColor: isDark ? Colors.white70 : Colors.black87,
                         controller: searchController,
                         onChanged: (value) {
                           handleSearch(value);
                         },
-                        style: GoogleFonts.montserrat(
-                            color: isDark ? light : Colors.white,
-                            fontSize: 16.0),
+                        style: GoogleFonts.montserrat(fontSize: 16.0),
                         decoration: InputDecoration(
                             hintText: 'Search...',
-                            hintStyle: GoogleFonts.montserrat(
-                              color: isDark ? light : Colors.white,
-                            ),
+                            hintStyle: GoogleFonts.montserrat(),
                             filled: false,
                             border: InputBorder.none,
                             isDense: true,
@@ -200,8 +185,8 @@ class _NotesPageState extends State<NotesPage> {
                         color: isSearchEmpty
                             ? Colors.transparent
                             : isDark
-                                ? dark
-                                : Colors.white,
+                                ? Colors.white70
+                                : Colors.black87,
                       ),
                       onPressed: cancelSearch,
                     ),
@@ -215,12 +200,15 @@ class _NotesPageState extends State<NotesPage> {
     );
   }
 
+  /// List of notes(search,flag)
   List<Widget> notesListBuilder() {
     List<Widget> noteComponentsList = [];
     notesList.sort((a, b) {
       return b.date.compareTo(a.date);
     });
+
     if (searchController.text.isNotEmpty) {
+      /// Matching title or content with the search key provided by user
       notesList.forEach((note) {
         if (note.title
                 .toLowerCase()
@@ -236,6 +224,7 @@ class _NotesPageState extends State<NotesPage> {
       return noteComponentsList;
     }
     if (isFlagOn) {
+      /// Only important notes are returned
       notesList.forEach((note) {
         if (note.isImportant)
           noteComponentsList.add(NoteCardComponent(
@@ -267,16 +256,14 @@ class _NotesPageState extends State<NotesPage> {
   }
 
   openNoteToRead(NotesModel noteData) async {
-    await Future.delayed(Duration(milliseconds: 230), () {});
     FocusScope.of(context).unfocus();
 
+    /// Navigate to View note screen
     Navigator.of(context).push(
       MaterialPageRoute(
           builder: (context) =>
               ViewNotePage(triggerRefetch: notesFromDB, currentNote: noteData)),
     );
-
-    await Future.delayed(Duration(milliseconds: 300), () {});
   }
 
   void cancelSearch() {

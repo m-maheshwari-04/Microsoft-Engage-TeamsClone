@@ -9,11 +9,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:team_clone/Calendar/CalendarScreen.dart';
 import 'package:team_clone/VideoCall/JitsiMeeting.dart';
 import 'package:team_clone/constants.dart';
-import 'dart:async';
 import 'package:flutter/painting.dart';
 
+/// Local notification
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
+
+/// Implements a flutter widget that renders the entire Home screen
+///
+/// Contains the following features
+/// - Create meeting
+/// - Join meeting
 
 class HomePage extends StatefulWidget {
   @override
@@ -25,9 +31,11 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
+    /// Used to change the launch page
     SharedPreferences.getInstance()
         .then((value) => value.setBool('shownWelcomeScreen', true));
 
+    /// Setting up Jitsi SDK
     JitsiMeet.addListener(JitsiMeetingListener(
         onConferenceWillJoin: (message) {},
         onConferenceJoined: (message) {},
@@ -42,6 +50,7 @@ class _HomePageState extends State<HomePage> {
         InitializationSettings(android: initializationSettingsAndroid);
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: (String? payload) async {
+      /// Navigate on notification tap
       await Navigator.push(
         context,
         MaterialPageRoute<void>(builder: (context) => Calendar()),
@@ -49,48 +58,26 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Future onDidReceiveLocalNotification(
-      int id, String title, String body, String payload) async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => CupertinoAlertDialog(
-        title: Text(title),
-        content: Text(body),
-        actions: [
-          CupertinoDialogAction(
-            isDefaultAction: true,
-            child: Text('Ok'),
-            onPressed: () async {
-              Navigator.of(context, rootNavigator: true).pop();
-              // await Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => CaptchaScreen(),
-              //   ),
-              // );
-            },
-          )
-        ],
-      ),
-    );
-  }
-
   @override
   void dispose() {
     super.dispose();
+
+    /// Disposing Jitsi variable on app termination
     JitsiMeet.removeAllListeners();
   }
 
+  /// UI of Home Screen
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: isDark ? dark : Colors.white,
+        backgroundColor: dark,
         resizeToAvoidBottomInset: false,
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
+              padding: EdgeInsets.all(10.h),
               child: Image(
                 height: 300.h,
                 image: AssetImage('images/home.png'),
@@ -100,65 +87,46 @@ class _HomePageState extends State<HomePage> {
             SizedBox(
               height: 20.h,
             ),
-            meetingButton(
-              context,
-              SizedBox(
-                height: 50.0.h,
-                width: double.maxFinite,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      primary: light),
-                  child: Text(
-                    "Join Meeting",
-                    style: GoogleFonts.montserrat(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  onPressed: () {
-                    JitsiMeeting.meeting(context,false);
-                  },
-                ),
-              ),
-            ),
-            meetingButton(
-              context,
-              SizedBox(
-                height: 50.0.h,
-                width: double.maxFinite,
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        primary: light),
-                    child: Text(
-                      "Create Meeting",
-                      style: GoogleFonts.montserrat(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    onPressed: () {
-                      JitsiMeeting.meeting(context,true);
-                    }),
-              ),
-            ),
+
+            /// Button to join meeting with code
+            meetingButton(context, "Join Meeting", false),
+
+            /// Button to create new meeting
+            meetingButton(context, "Create Meeting", true),
           ],
         ),
       ),
     );
   }
 
-  Container meetingButton(BuildContext context, Widget button) {
+  /// Homepage button UI
+  Container meetingButton(BuildContext context, String text, bool newMeeting) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 2.h),
       padding: EdgeInsets.symmetric(horizontal: 10.0.w, vertical: 6.h),
       width: double.infinity,
       child: Padding(
         padding: const EdgeInsets.all(6.0),
-        child: button,
+        child: SizedBox(
+          height: 50.0.h,
+          width: double.maxFinite,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                primary: primary),
+            child: Text(
+              text,
+              style: GoogleFonts.montserrat(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white),
+            ),
+            onPressed: () {
+              JitsiMeeting.meeting(context, newMeeting);
+            },
+          ),
+        ),
       ),
     );
   }

@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
@@ -7,7 +6,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:team_clone/constants.dart';
 import 'package:team_clone/main.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+/// Implements a flutter widget that renders the Setting Screen
+///
+/// Contains the following features
+/// - changing theme
+/// - link to github repo
+///
 class SettingsPage extends StatefulWidget {
   @override
   _SettingsPageState createState() => _SettingsPageState();
@@ -15,8 +21,10 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   late String selectedTheme;
+
   @override
   Widget build(BuildContext context) {
+    /// Used to change the theme
     setState(() {
       if (isDark) {
         selectedTheme = 'dark';
@@ -25,8 +33,9 @@ class _SettingsPageState extends State<SettingsPage> {
       }
     });
 
+    /// UI of Setting screen
     return Scaffold(
-      backgroundColor: isDark ? dark : Colors.white,
+      backgroundColor: dark,
       body: ListView(
         physics: BouncingScrollPhysics(),
         children: <Widget>[
@@ -34,6 +43,7 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              /// Navigate back to previous screen
               GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
@@ -55,6 +65,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
               ),
+
+              /// App theme
               cardWidget(
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,6 +117,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   ],
                 ),
               ),
+
+              /// About section
               cardWidget(Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
@@ -130,6 +144,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       style: GoogleFonts.montserrat(fontSize: 24),
                     ),
                   )),
+
+                  /// Redirect to github repo of this app
                   Container(
                     alignment: Alignment.center,
                     child: OutlineButton.icon(
@@ -141,7 +157,13 @@ class _SettingsPageState extends State<SettingsPage> {
                               color: Colors.grey.shade500)),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16)),
-                      onPressed: () {},
+                      onPressed: () async {
+                        String _url =
+                            'https://github.com/m-maheshwari-04/Microsoft-Engage-TeamClone';
+                        await canLaunch(_url)
+                            ? await launch(_url)
+                            : throw 'Could not launch $_url';
+                      },
                     ),
                   ),
                   Container(
@@ -185,14 +207,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget cardWidget(Widget child) {
     return Container(
-      decoration:
-          BoxDecoration(borderRadius: BorderRadius.circular(16), boxShadow: [
-        BoxShadow(
-            offset: Offset(0, 8),
-            color:
-                !isDark ? dark.withOpacity(0.2) : Colors.white.withOpacity(0.2),
-            blurRadius: 1)
-      ]),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: isDark ? darkShadowTop : lightShadowTop),
       margin: EdgeInsets.all(20.h),
       padding: EdgeInsets.all(20.h),
       child: child,

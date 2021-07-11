@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:team_clone/Calendar/CalendarConstants.dart';
 import 'package:team_clone/Chat/allUsers.dart';
 import 'chat.dart';
 import 'package:team_clone/Chat/createGroup.dart';
@@ -50,8 +51,13 @@ class _ChatPageState extends State<ChatPage> {
           ),
         ).then((value) => getChats());
       },
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 6.0.h),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          color: light,
+        ),
+        padding: EdgeInsets.symmetric(vertical: 4.0.h,horizontal: 8.w),
+        margin: EdgeInsets.only(bottom: 4.h),
         child: Row(
           children: [
             Avatar(url: user.imgUrl),
@@ -62,7 +68,8 @@ class _ChatPageState extends State<ChatPage> {
               children: [
                 Text(
                   user.name,
-                  style:GoogleFonts.montserrat(fontSize: 15.0, fontWeight: FontWeight.w400),
+                  style: GoogleFonts.montserrat(
+                      fontSize: 15.0, fontWeight: FontWeight.w400),
                 ),
                 SizedBox(height: 2.0.h),
                 if (user.uid.length != 18)
@@ -72,13 +79,13 @@ class _ChatPageState extends State<ChatPage> {
                       style: GoogleFonts.montserrat(
                           color: Colors.grey,
                           fontSize: 14.0,
-                          fontWeight: FontWeight.w200))
+                          fontWeight: FontWeight.w300))
               ],
             )),
             SizedBox(width: 8.0.w),
             Text(
               user.time != null ? chatTime(user.time!) : '',
-              style:GoogleFonts.montserrat(fontSize: 12.0),
+              style: GoogleFonts.montserrat(fontSize: 12.0),
             )
           ],
         ),
@@ -214,15 +221,15 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          backgroundColor: isDark ? dark : Colors.white,
+          backgroundColor: dark,
           floatingActionButton: SpeedDial(
               icon: Icons.add,
               iconTheme: IconThemeData(color: Colors.white),
-              backgroundColor: light,
+              backgroundColor: primary,
               children: [
                 SpeedDialChild(
                   child: Icon(Icons.person_add, color: Colors.white),
-                  backgroundColor: light,
+                  backgroundColor: primary,
                   onTap: () {
                     Navigator.push(context,
                             MaterialPageRoute(builder: (context) => AllUsers()))
@@ -231,7 +238,7 @@ class _ChatPageState extends State<ChatPage> {
                 ),
                 SpeedDialChild(
                   child: Icon(Icons.group_add_rounded, color: Colors.white),
-                  backgroundColor: light,
+                  backgroundColor: primary,
                   onTap: () {
                     Navigator.push(
                             context,
@@ -249,22 +256,21 @@ class _ChatPageState extends State<ChatPage> {
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 10.0),
                   decoration: BoxDecoration(
-                      color: !isDark ? dark : Colors.white,
-                      borderRadius: BorderRadius.circular(30.0)),
+                      color: light, borderRadius: BorderRadius.circular(30.0)),
                   child: Row(
                     children: <Widget>[
                       Container(
                           padding: EdgeInsets.all(6.0),
                           decoration: BoxDecoration(
-                              color: Color(0xfff3f2ee), shape: BoxShape.circle),
+                              color:dark, shape: BoxShape.circle),
                           child: Icon(
                             Icons.search,
                             size: 16.0,
-                            color: Theme.of(context).primaryColor,
                           )),
                       SizedBox(width: 12.0),
                       Expanded(
                         child: TextField(
+                          cursorColor: isDark?Colors.white70:Colors.black87,
                           controller: searchController,
                           onChanged: (value) {
                             if (value.isEmpty || value.length == 0) {
@@ -286,14 +292,10 @@ class _ChatPageState extends State<ChatPage> {
                             }
                             setState(() {});
                           },
-                          style: GoogleFonts.montserrat(
-                              color: isDark ? light : Colors.white,
-                              fontSize: 16.0),
+                          style: GoogleFonts.montserrat(fontSize: 16.0),
                           decoration: InputDecoration(
                               hintText: 'Search...',
-                              hintStyle:GoogleFonts.montserrat(
-                                color: isDark ? light : Colors.white,
-                              ),
+                              hintStyle: GoogleFonts.montserrat(),
                               filled: false,
                               border: InputBorder.none,
                               isDense: true,
@@ -319,7 +321,7 @@ class _ChatPageState extends State<ChatPage> {
                             padding: EdgeInsets.all(5.0),
                             child: Center(
                                 child: CircularProgressIndicator(
-                              color: isDark ? Colors.white : light,
+                              color: primary,
                             )),
                           ),
                         ),

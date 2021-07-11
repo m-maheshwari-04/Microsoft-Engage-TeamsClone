@@ -5,6 +5,7 @@ import 'package:team_clone/Notes/models.dart';
 import 'package:team_clone/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+/// UI of each note (NotesPage)
 class NoteCardComponent extends StatelessWidget {
   NoteCardComponent({required this.noteData, required this.onTapAction});
 
@@ -17,12 +18,11 @@ class NoteCardComponent extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12.h),
-      ),
+          borderRadius: BorderRadius.circular(12.h), color: light),
       child: Material(
         borderRadius: BorderRadius.circular(12.h),
         clipBehavior: Clip.antiAlias,
-        color: isDark ? Colors.white.withOpacity(0.2) : light.withOpacity(0.2),
+        color: light,
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
           onTap: () {
@@ -57,16 +57,15 @@ class NoteCardComponent extends StatelessWidget {
                     children: <Widget>[
                       Icon(Icons.flag,
                           size: 16,
-                          color:
-                              noteData.isImportant ? dark : Colors.transparent),
+                          color: noteData.isImportant
+                              ? primary
+                              : Colors.transparent),
                       Spacer(),
                       Text(
                         '$neatDate',
                         textAlign: TextAlign.right,
                         style: GoogleFonts.montserrat(
-                            fontSize: 12,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500),
+                            fontSize: 12, fontWeight: FontWeight.w500),
                       ),
                     ],
                   ),

@@ -14,6 +14,7 @@ import '../../constants.dart';
 
 final _firestore = FirebaseFirestore.instance;
 
+/// Send image to chat
 class SendImage extends StatefulWidget {
   final File image;
   final String hash;
@@ -28,25 +29,15 @@ class _SendImageState extends State<SendImage> {
   late File _imageFile;
   var progress;
 
+  /// Crop image functionality
   Future<Null> _cropImage() async {
     File? croppedFile = await ImageCropper.cropImage(
         sourcePath: _imageFile.path,
-        aspectRatioPresets: Platform.isAndroid
-            ? [
+        aspectRatioPresets:  [
                 CropAspectRatioPreset.square,
                 CropAspectRatioPreset.ratio3x2,
                 CropAspectRatioPreset.original,
                 CropAspectRatioPreset.ratio4x3,
-                CropAspectRatioPreset.ratio16x9
-              ]
-            : [
-                CropAspectRatioPreset.original,
-                CropAspectRatioPreset.square,
-                CropAspectRatioPreset.ratio3x2,
-                CropAspectRatioPreset.ratio4x3,
-                CropAspectRatioPreset.ratio5x3,
-                CropAspectRatioPreset.ratio5x4,
-                CropAspectRatioPreset.ratio7x5,
                 CropAspectRatioPreset.ratio16x9
               ],
         androidUiSettings: AndroidUiSettings(
@@ -54,7 +45,8 @@ class _SendImageState extends State<SendImage> {
             toolbarWidgetColor: Colors.white,
             initAspectRatio: CropAspectRatioPreset.original,
             lockAspectRatio: false,
-            toolbarColor: Colors.deepOrange),
+            activeControlsWidgetColor: primary,
+            toolbarColor: primary),
         iosUiSettings: IOSUiSettings(
           title: 'Crop Image',
         ));
@@ -65,7 +57,8 @@ class _SendImageState extends State<SendImage> {
     }
   }
 
-  Future<void> uploadImage(BuildContext context) async {
+  /// Send image in the chat
+  Future<void> sendImage(BuildContext context) async {
     String fileName = basename(_imageFile.path);
     final Reference firebaseStoreReference =
         FirebaseStorage.instance.ref().child(fileName);
@@ -104,7 +97,7 @@ class _SendImageState extends State<SendImage> {
       child: Scaffold(
         backgroundColor: Colors.black,
         body: ProgressHUD(
-          indicatorColor: isDark ? Colors.white : light,
+          indicatorColor: primary,
           backgroundColor: Colors.transparent,
           borderColor: Colors.transparent,
           child: Builder(builder: (context) {
@@ -154,13 +147,13 @@ class _SendImageState extends State<SendImage> {
                       child: FlatButton(
                         onPressed: () async {
                           progress.show();
-                          await uploadImage(context);
+                          await sendImage(context);
                           progress.dismiss();
                           Navigator.pop(context);
                         },
                         child: Text(
                           'SEND',
-                          style:GoogleFonts.montserrat(
+                          style: GoogleFonts.montserrat(
                             fontSize: 18,
                             color: Colors.white,
                           ),

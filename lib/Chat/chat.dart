@@ -5,7 +5,9 @@ import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:team_clone/Calendar/CalendarConstants.dart';
 import 'package:team_clone/Chat/ChatRoom/FirstMessage.dart';
+import 'package:team_clone/Widget/Toast.dart';
 import 'ChatRoom/ImageViewingScreen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'ChatRoom/Notification.dart';
@@ -16,9 +18,14 @@ import 'package:team_clone/VideoCall/JitsiMeeting.dart';
 import 'package:team_clone/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'user_model.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 
 final _firestore = FirebaseFirestore.instance;
 
+/// Stores chat for sending email
+String body = '';
+
+/// User chat or group chat screen
 class Chat extends StatefulWidget {
   static const String id = 'chat';
 
@@ -36,10 +43,12 @@ class _ChatState extends State<Chat> {
 
   @override
   void initState() {
+    body = '';
     super.initState();
   }
 
-  void handleClick(String value) {
+  /// More options
+  Future<void> handleClick(String value) async {
     switch (value) {
       case 'Delete':
         {
@@ -61,6 +70,20 @@ class _ChatState extends State<Chat> {
         {
           FlutterClipboard.copy(widget.hash.substring(0, 10))
               .then((value) => print('copied'));
+          break;
+        }
+      case 'Email chat':
+        {
+          final Email email = Email(
+            body: body,
+            subject: "${widget.user.name} Chat",
+            isHTML: false,
+          );
+          try {
+            await FlutterEmailSender.send(email);
+          } catch (error) {
+            print(error.toString());
+          }
         }
     }
   }
@@ -68,11 +91,10 @@ class _ChatState extends State<Chat> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: isDark ? dark : Colors.white,
+      backgroundColor: dark,
       appBar: AppBar(
         elevation: 0.4,
-        backgroundColor: isDark ? dark : Colors.white,
-        iconTheme: IconThemeData(color: !isDark ? dark : Colors.white),
+        backgroundColor: bar,
         title: GestureDetector(
           onTap: () {
             if (widget.hash.length == 18) {
@@ -101,8 +123,7 @@ class _ChatState extends State<Chat> {
                   widget.user.name,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.montserrat(
-                      fontSize: 16.sp, color: !isDark ? dark : Colors.white),
+                  style: GoogleFonts.montserrat(fontSize: 16.sp),
                 ),
               ),
             ],
@@ -112,7 +133,6 @@ class _ChatState extends State<Chat> {
           IconButton(
             icon: Icon(
               Icons.videocam,
-              color: !isDark ? dark : Colors.white,
             ),
             onPressed: () {
               if (widget.hash.length != 18) {
@@ -143,26 +163,26 @@ class _ChatState extends State<Chat> {
                   false);
             },
           ),
-          if (widget.hash.length == 18)
-            PopupMenuButton<String>(
-              onSelected: handleClick,
-              color: !isDark ? dark : Colors.white,
-              itemBuilder: (BuildContext context) {
-                return {
-                  if (widget.hash.endsWith('!@#%^&*(')) 'Copy code',
-                  'Delete'
-                }.map((String choice) {
-                  return PopupMenuItem<String>(
-                    value: choice,
-                    child: Text(
-                      choice,
-                      style: GoogleFonts.montserrat(
-                          color: isDark ? Colors.black : Colors.white),
-                    ),
-                  );
-                }).toList();
-              },
-            ),
+          PopupMenuButton<String>(
+            onSelected: handleClick,
+            itemBuilder: (BuildContext context) {
+              return {
+                if (widget.hash.length == 18 &&
+                    widget.hash.endsWith('!@#%^&*('))
+                  'Copy code',
+                'Email chat',
+                if (widget.hash.length == 18) 'Delete'
+              }.map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(
+                    choice,
+                    style: GoogleFonts.montserrat(),
+                  ),
+                );
+              }).toList();
+            },
+          ),
         ],
       ),
       body: SafeArea(
@@ -179,19 +199,18 @@ class _ChatState extends State<Chat> {
                   2,
                 ),
                 decoration: BoxDecoration(
-                  color: !isDark
-                      ? dark.withOpacity(0.05)
-                      : Colors.white.withOpacity(0.05),
+                  color: light,
                   borderRadius: BorderRadius.circular(40),
                 ),
                 child: Row(
                   children: <Widget>[
+                    /// Take new photo
                     IconButton(
                       splashRadius: 1,
                       padding: EdgeInsets.all(0),
                       icon: Icon(
                         Icons.camera,
-                        color: isDark ? Colors.white : light,
+                        color: primary,
                       ),
                       onPressed: () async {
                         await ImagePicker()
@@ -210,12 +229,14 @@ class _ChatState extends State<Chat> {
                         });
                       },
                     ),
+
+                    /// Select photo from gallery
                     IconButton(
                       splashRadius: 1,
                       padding: EdgeInsets.all(0),
                       icon: Icon(
                         Icons.image,
-                        color: isDark ? Colors.white : light,
+                        color: primary,
                       ),
                       onPressed: () async {
                         await ImagePicker()
@@ -234,6 +255,8 @@ class _ChatState extends State<Chat> {
                         });
                       },
                     ),
+
+                    /// Message box
                     Expanded(
                       child: TextFormField(
                         controller: messageTextController,
@@ -249,10 +272,12 @@ class _ChatState extends State<Chat> {
                         ),
                       ),
                     ),
+
+                    /// Send message
                     IconButton(
                       icon: Icon(
                         Icons.send,
-                        color: isDark ? Colors.white : light,
+                        color: primary,
                       ),
                       splashRadius: 1,
                       onPressed: () {
@@ -290,6 +315,7 @@ class _ChatState extends State<Chat> {
   }
 }
 
+/// Get messages from firebase
 class MessageStream extends StatelessWidget {
   final String hash;
   MessageStream({required this.hash});
@@ -307,10 +333,14 @@ class MessageStream extends StatelessWidget {
         }
 
         var notSortedMessages = snapshot.data!.docs;
+
+        /// Sort messages according to time
         notSortedMessages.sort((a, b) => a['time'].compareTo(b['time']));
+
         var messages = List.from(notSortedMessages.reversed);
 
         List<Bubble> messageBubbles = [];
+        body = 'Chat ' + '\n\n';
         for (var message in messages) {
           final messageText = message.data()['text'];
           final messageSender = message.data()['sender'];
@@ -318,6 +348,22 @@ class MessageStream extends StatelessWidget {
           final messageImage = message.data()['img'];
           final messageCall = message.data()['call'];
 
+          DateTime time = DateTime.parse(messageTime);
+
+          if (!(messageCall ?? false) && !(messageImage ?? false)) {
+            body += messageSender +
+                ' (' +
+                time.day.toString() +
+                ' ' +
+                shortHandMonths[time.month - 1] +
+                ' ' +
+                formatTime('0' + time.hour.toString()) +
+                ':' +
+                formatTime('0' + time.minute.toString()) +
+                ') : ' +
+                messageText +
+                '\n\n';
+          }
           final messageBubble = Bubble(
             hash: hash,
             message: messageText,
@@ -328,7 +374,7 @@ class MessageStream extends StatelessWidget {
             sender: messageSender,
             image: messageImage ?? false,
             call: messageCall ?? false,
-            time: DateTime.parse(messageTime),
+            time: time,
           );
           messageBubbles.add(messageBubble);
         }
@@ -344,6 +390,7 @@ class MessageStream extends StatelessWidget {
   }
 }
 
+/// Chat message buble
 class Bubble extends StatelessWidget {
   final bool isMe;
   final bool image;
@@ -364,7 +411,10 @@ class Bubble extends StatelessWidget {
 
   Widget build(BuildContext context) {
     return call
-        ? Padding(
+        ?
+
+        /// New call start
+        Padding(
             padding: const EdgeInsets.all(10.0),
             child: GestureDetector(
               onTap: () {
@@ -377,7 +427,7 @@ class Bubble extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.all(12.h),
                 decoration: BoxDecoration(
-                    color: Colors.blueGrey,
+                    color: primary,
                     borderRadius: BorderRadius.all(
                       Radius.circular(15),
                     )),
@@ -387,7 +437,8 @@ class Bubble extends StatelessWidget {
                     Text(
                       message,
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.montserrat(color: Colors.white, fontSize: 16),
+                      style: GoogleFonts.montserrat(
+                          color: Colors.white, fontSize: 15),
                     ),
                     Text(
                       'Tap to join the meeting',
@@ -402,169 +453,163 @@ class Bubble extends StatelessWidget {
               ),
             ),
           )
-        : Container(
-            margin: EdgeInsets.all(5),
-            padding:
-                isMe ? EdgeInsets.only(left: 40) : EdgeInsets.only(right: 40),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Column(
-                  mainAxisAlignment:
-                      isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-                  crossAxisAlignment:
-                      isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                  children: <Widget>[
-                    hash.length == 18 && !isMe
-                        ? Text(
-                            sender,
-                            style: GoogleFonts.montserrat(fontSize: 12.0),
-                          )
-                        : Container(),
-                    image
-                        ? Container(
-                            padding: EdgeInsets.only(
-                                top: 10.0, bottom: 10.0, left: 10.0),
-                            child: Material(
-                              elevation: 7.0,
-                              borderRadius: isMe
-                                  ? BorderRadius.only(
-                                      topRight: Radius.circular(15),
-                                      topLeft: Radius.circular(15),
-                                      bottomRight: Radius.circular(0),
-                                      bottomLeft: Radius.circular(15),
-                                    )
-                                  : BorderRadius.only(
-                                      topRight: Radius.circular(15),
-                                      topLeft: Radius.circular(15),
-                                      bottomRight: Radius.circular(15),
-                                      bottomLeft: Radius.circular(0),
-                                    ),
-                              color:
-                                  isMe ? Color(0xFF7F8DC9) : Color(0xFFC1E4FD),
-                              child: Padding(
-                                padding: EdgeInsets.all(1.0),
-                                child: Column(
-                                  mainAxisAlignment: isMe
-                                      ? MainAxisAlignment.end
-                                      : MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => ImageView(
-                                                    url: this.message)));
-                                      },
-                                      child: CachedNetworkImage(
-                                        placeholder: (context, url) =>
-                                            Container(
-                                          child: CircularProgressIndicator(
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                                    Colors.green),
-                                          ),
-                                          width: 250.0,
-                                          height: 250.0,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.only(
-                                                bottomRight:
-                                                    Radius.circular(30.0),
-                                                topLeft: Radius.circular(30.0),
-                                                bottomLeft:
-                                                    Radius.circular(30.0)),
-                                          ),
-                                        ),
-                                        imageUrl: this.message,
-                                        width: 200.0,
-                                        height: 200.0,
-                                        fit: BoxFit.cover,
+        : GestureDetector(
+            onLongPress: () {
+              if (!image) {
+                FlutterClipboard.copy(message)
+                    .then((value) => toast('Message copied'));
+              }
+            },
+            child: Container(
+              margin: EdgeInsets.all(5),
+              padding:
+                  isMe ? EdgeInsets.only(left: 40) : EdgeInsets.only(right: 40),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Column(
+                    mainAxisAlignment:
+                        isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+                    crossAxisAlignment: isMe
+                        ? CrossAxisAlignment.end
+                        : CrossAxisAlignment.start,
+                    children: <Widget>[
+                      hash.length == 18 && !isMe
+                          ? Text(
+                              sender,
+                              style: GoogleFonts.montserrat(fontSize: 12.0),
+                            )
+                          : Container(),
+                      image
+                          ?
+
+                          /// Image in chat
+                          Container(
+                              padding: EdgeInsets.only(
+                                  top: 10.0, bottom: 10.0, left: 10.0),
+                              child: Material(
+                                elevation: 7.0,
+                                borderRadius: isMe
+                                    ? BorderRadius.only(
+                                        topRight: Radius.circular(15),
+                                        topLeft: Radius.circular(15),
+                                        bottomRight: Radius.circular(0),
+                                        bottomLeft: Radius.circular(15),
+                                      )
+                                    : BorderRadius.only(
+                                        topRight: Radius.circular(15),
+                                        topLeft: Radius.circular(15),
+                                        bottomRight: Radius.circular(15),
+                                        bottomLeft: Radius.circular(0),
                                       ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          right: 8.0.h, bottom: 5.h),
-                                      child: chatTime(),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              clipBehavior: Clip.hardEdge,
-                            ),
-                          )
-                        : Container(
-                            constraints: BoxConstraints(
-                              minWidth: 80.0,
-                            ),
-                            decoration: BoxDecoration(
-                              gradient: isMe
-                                  ? LinearGradient(
-                                      begin: Alignment.topRight,
-                                      end: Alignment.bottomLeft,
-                                      stops: [
-                                          0.1,
-                                          1
-                                        ],
-                                      colors: [
-                                          Color(0xFF7F8DC9),
-                                          Color(0xFF7F8DC9),
-                                        ])
-                                  : LinearGradient(
-                                      begin: Alignment.topRight,
-                                      end: Alignment.bottomLeft,
-                                      stops: [
-                                          0.1,
-                                          1
-                                        ],
-                                      colors: [
-                                          Color(0xFFE1F2FE),
-                                          Color(0xFFC1E4FD),
-                                        ]),
-                              borderRadius: isMe
-                                  ? BorderRadius.only(
-                                      topRight: Radius.circular(15),
-                                      topLeft: Radius.circular(15),
-                                      bottomRight: Radius.circular(0),
-                                      bottomLeft: Radius.circular(15),
-                                    )
-                                  : BorderRadius.only(
-                                      topRight: Radius.circular(15),
-                                      topLeft: Radius.circular(15),
-                                      bottomRight: Radius.circular(15),
-                                      bottomLeft: Radius.circular(0),
-                                    ),
-                            ),
-                            child: Stack(
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.fromLTRB(10, 10, 10, 14),
-                                  child: Text(
-                                    message,
-                                    textAlign:
-                                        isMe ? TextAlign.end : TextAlign.start,
-                                    style: GoogleFonts.montserrat(
-                                      color:
-                                          isMe ? Colors.white : Colors.blueGrey,
-                                    ),
+                                color: isMe ? light : primary.withOpacity(0.3),
+                                child: Padding(
+                                  padding: EdgeInsets.all(1.0),
+                                  child: Column(
+                                    mainAxisAlignment: isMe
+                                        ? MainAxisAlignment.end
+                                        : MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ImageView(
+                                                          url: this.message)));
+                                        },
+                                        child: CachedNetworkImage(
+                                          placeholder: (context, url) =>
+                                              Container(
+                                            child: CircularProgressIndicator(
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                     primary),
+                                            ),
+                                            width: 250.0,
+                                            height: 250.0,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(
+                                                  bottomRight:
+                                                      Radius.circular(30.0),
+                                                  topLeft:
+                                                      Radius.circular(30.0),
+                                                  bottomLeft:
+                                                      Radius.circular(30.0)),
+                                            ),
+                                          ),
+                                          imageUrl: this.message,
+                                          width: 200.0,
+                                          height: 200.0,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            right: 8.0.h, bottom: 5.h),
+                                        child: chatTime(),
+                                      )
+                                    ],
                                   ),
                                 ),
-                                Positioned(
-                                    bottom: 2,
-                                    right: isMe ? 6 : 8,
-                                    child: chatTime())
-                              ],
+                                clipBehavior: Clip.hardEdge,
+                              ),
+                            )
+                          :
+
+                          /// Text message
+                          Container(
+                              constraints: BoxConstraints(
+                                minWidth: 80.0,
+                              ),
+                              decoration: BoxDecoration(
+                                color: isMe ? light : primary.withOpacity(0.3),
+                                borderRadius: isMe
+                                    ? BorderRadius.only(
+                                        topRight: Radius.circular(15),
+                                        topLeft: Radius.circular(15),
+                                        bottomRight: Radius.circular(0),
+                                        bottomLeft: Radius.circular(15),
+                                      )
+                                    : BorderRadius.only(
+                                        topRight: Radius.circular(15),
+                                        topLeft: Radius.circular(15),
+                                        bottomRight: Radius.circular(15),
+                                        bottomLeft: Radius.circular(0),
+                                      ),
+                              ),
+                              child: Stack(
+                                children: [
+                                  Container(
+                                    padding:
+                                        EdgeInsets.fromLTRB(10, 10, 10, 14),
+                                    child: Text(
+                                      message,
+                                      textAlign: isMe
+                                          ? TextAlign.end
+                                          : TextAlign.start,
+                                      style: GoogleFonts.montserrat(),
+                                    ),
+                                  ),
+                                  Positioned(
+                                      bottom: 2,
+                                      right: isMe ? 6 : 8,
+                                      child: chatTime())
+                                ],
+                              ),
                             ),
-                          ),
-                  ],
-                )
-              ],
+                    ],
+                  )
+                ],
+              ),
             ),
           );
   }
 
+  /// UI for message timestamp
   Text chatTime() {
     return Text(
       time.day.toString() +
@@ -577,12 +622,11 @@ class Bubble extends StatelessWidget {
       style: GoogleFonts.montserrat(
         fontSize: 9.0,
         fontWeight: FontWeight.w300,
-        color: isMe ? Colors.white : Colors.blueGrey,
       ),
     );
   }
+}
 
-  String formatTime(String time) {
-    return time.substring(time.length - 2);
-  }
+String formatTime(String time) {
+  return time.substring(time.length - 2);
 }

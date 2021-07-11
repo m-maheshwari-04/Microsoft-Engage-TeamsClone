@@ -1,24 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:team_clone/Widget/Toast.dart';
 import 'package:team_clone/constants.dart';
 import 'package:team_clone/nav_bar_file.dart';
 import 'package:team_clone/Login/AfterLogin/Welcome.dart';
 
+/// All functionalities related to Firebase authentication
 class Authentication {
-  static SnackBar customSnackBar({required String content}) {
-    return SnackBar(
-      backgroundColor: Colors.black,
-      content: Text(
-        content,
-        style: GoogleFonts.montserrat(color: Colors.redAccent, letterSpacing: 0.5),
-      ),
-    );
-  }
-
+  /// Firebase initialization
   static Future<FirebaseApp> initializeFirebase({
     required BuildContext context,
   }) async {
@@ -41,6 +32,7 @@ class Authentication {
     return firebaseApp;
   }
 
+  /// Sign in with google
   static Future<User?> signInWithGoogle({required BuildContext context}) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user;
@@ -75,6 +67,7 @@ class Authentication {
     return user;
   }
 
+  /// Sign out from firebase
   static Future<void> signOut({required BuildContext context}) async {
     final GoogleSignIn googleSignIn = GoogleSignIn();
 

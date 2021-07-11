@@ -21,6 +21,9 @@ import 'main.dart';
 import 'constants.dart';
 import 'package:flutter/services.dart';
 
+/// Implements a flutter widget that renders the basic structure of app
+///
+/// Header, drawer and bottom navigation bar are implemented here=
 class NavBarClass extends StatefulWidget {
   int currIndex;
   NavBarClass(this.currIndex);
@@ -29,17 +32,20 @@ class NavBarClass extends StatefulWidget {
 }
 
 class _NavBarClassState extends State<NavBarClass> {
+  /// variable to control the app theme
   bool isSwitched = false;
-  late List<bool> isSelected;
+
+  /// PageController for navigation to home/chat/calendar screen
   PageController _pageController = new PageController();
 
+  /// Instance of FirebaseMessaging
+  /// used for sending push notification via firebase
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   @override
   void initState() {
     super.initState();
     isDark = themeChangeProvider.darkTheme;
-    isSelected = [true, false];
 
     _pageController = PageController(initialPage: widget.currIndex);
     Future.delayed(const Duration(seconds: 2), () {
@@ -59,11 +65,10 @@ class _NavBarClassState extends State<NavBarClass> {
     super.dispose();
   }
 
+  /// Initializing firebase notification for chat
   void firebaseCloudMessagingListeners(BuildContext context) {
     _firebaseMessaging.getToken().then((deviceToken) {
-      print("Firebase Device token: $deviceToken");
-
-      //FCM token update for notification
+      ///FCM token update for firebase notification
       FirebaseFirestore.instance
           .collection('users')
           .doc(currentUser!.uid)
@@ -83,6 +88,7 @@ class _NavBarClassState extends State<NavBarClass> {
     });
   }
 
+  /// Displaying any message received in device notifications
   void showNotification(message) async {
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
       'com.example.team_clone',
@@ -107,15 +113,19 @@ class _NavBarClassState extends State<NavBarClass> {
         [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: Text('Microsoft Teams',style: GoogleFonts.montserrat())),
+        /// Overall app's appbar
+        appBar: AppBar(title: Text('Teams', style: GoogleFonts.montserrat())),
+
+        /// Drawer containing list of options available
         drawer: Drawer(
           child: Container(
-            color: isDark ? dark : Colors.white,
+            color: dark,
             child: ListView(
               children: [
+                /// About user
                 Container(
                   decoration: BoxDecoration(
-                    color: isDark ? dark : Color(0xFFECEDF5),
+                    color: dark,
                   ),
                   child: Column(
                     children: [
@@ -133,8 +143,7 @@ class _NavBarClassState extends State<NavBarClass> {
                             children: [
                               CircleAvatar(
                                 radius: 62.0,
-                                backgroundColor:
-                                    isDark ? Colors.white : Colors.black,
+                                backgroundColor: light,
                                 child: CircleAvatar(
                                   radius: 60.0,
                                   child: ClipOval(
@@ -148,20 +157,16 @@ class _NavBarClassState extends State<NavBarClass> {
                                               image: AssetImage('images/1.png'),
                                               height: 110,
                                             )),
-                                  backgroundColor: isDark ? dark : Colors.white,
+                                  backgroundColor: dark,
                                 ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(2.0),
                                 child: Text(
                                   currentUser!.displayName ?? 'User',
-                                  style: GoogleFonts.karla(
-                                    textStyle:GoogleFonts.montserrat(
-                                      color:
-                                          isDark ? Colors.white : Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15,
-                                    ),
+                                  style: GoogleFonts.montserrat(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
                                   ),
                                 ),
                               ),
@@ -172,12 +177,8 @@ class _NavBarClassState extends State<NavBarClass> {
                                           currentUser!.email!.isNotEmpty
                                       ? currentUser!.email!
                                       : currentUser!.phoneNumber.toString(),
-                                  style: GoogleFonts.karla(
-                                    textStyle: GoogleFonts.montserrat(
-                                      color:
-                                          isDark ? Colors.white : Colors.black,
-                                      fontSize: 14,
-                                    ),
+                                  style: GoogleFonts.montserrat(
+                                    fontSize: 14,
                                   ),
                                 ),
                               ),
@@ -220,7 +221,7 @@ class _NavBarClassState extends State<NavBarClass> {
                     child: Container(
                       decoration: BoxDecoration(
                         boxShadow: isDark ? darkShadow : lightShadow,
-                        color: light.withOpacity(0.8),
+                        color: primary,
                         borderRadius: BorderRadius.all(
                           Radius.circular(14),
                         ),
@@ -229,7 +230,7 @@ class _NavBarClassState extends State<NavBarClass> {
                         margin: EdgeInsets.only(left: 12.0),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: isDark ? dark : Colors.white,
+                            color: light,
                             borderRadius: BorderRadius.only(
                               topRight: Radius.circular(14),
                               bottomRight: Radius.circular(14),
@@ -254,11 +255,7 @@ class _NavBarClassState extends State<NavBarClass> {
                                         Container(
                                           width: 150,
                                           child: AutoSizeText('Invite',
-                                              style: GoogleFonts.montserrat(
-                                                color: isDark
-                                                    ? Colors.white
-                                                    : Colors.black,
-                                              )),
+                                              style: GoogleFonts.montserrat()),
                                         ),
                                       ],
                                     ),
@@ -274,15 +271,18 @@ class _NavBarClassState extends State<NavBarClass> {
                   onTap: () async {
                     Navigator.of(context).pop();
                     await FlutterShare.share(
-                        title: 'Team Clone',
-                        text: 'Download Team-Clone using the link:',
-                        linkUrl:
-                            'https://bit.ly/3hkQhmV',
-                        chooserTitle: 'Example Chooser Title');
+                        title: 'Teams',
+                        text: 'Download Teams using the link:',
+                        linkUrl: 'https://bit.ly/3hkQhmV',
+                        chooserTitle: 'Teams');
                   },
                 ),
+
+                /// Logout button
                 GestureDetector(
                   onTap: () async {
+                    /// Clearing FCM token from firebase
+                    /// so that user does not receive notification on this device
                     FirebaseFirestore.instance
                         .collection('users')
                         .doc(currentUser!.uid)
@@ -294,7 +294,10 @@ class _NavBarClassState extends State<NavBarClass> {
                     final prefs = await SharedPreferences.getInstance();
                     prefs.setString('tasks', json.encode(tasks));
 
+                    /// Signing out
                     await Authentication.signOut(context: context);
+
+                    /// Navigate to login screen
                     Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(builder: (context) => LoginScreen()),
                         (Route<dynamic> route) => false);
@@ -303,7 +306,7 @@ class _NavBarClassState extends State<NavBarClass> {
                     margin: const EdgeInsets.only(
                         left: 80.0, right: 80.0, top: 15.0, bottom: 10.0),
                     decoration: BoxDecoration(
-                      color: light,
+                      color: primary,
                       borderRadius: BorderRadius.all(Radius.circular(14)),
                     ),
                     child: Padding(
@@ -311,12 +314,10 @@ class _NavBarClassState extends State<NavBarClass> {
                       child: Center(
                         child: Text(
                           "Log Out",
-                          style: GoogleFonts.karla(
-                            textStyle: GoogleFonts.montserrat(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
+                          style: GoogleFonts.montserrat(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
                           ),
                         ),
                       ),
@@ -327,6 +328,8 @@ class _NavBarClassState extends State<NavBarClass> {
             ),
           ),
         ),
+
+        /// Controller to navigate to different screens in bottom nav bar
         body: PageView(
           controller: _pageController,
           onPageChanged: (index) {
@@ -334,31 +337,36 @@ class _NavBarClassState extends State<NavBarClass> {
               widget.currIndex = index;
             });
           },
+
+          /// Bottom nav bar options
           children: [HomePage(), ChatPage(), Calendar()],
         ),
+
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.shifting,
-          backgroundColor: Colors.white,
+          backgroundColor: bar,
           unselectedItemColor: isDark ? Colors.white : Colors.black87,
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              backgroundColor: isDark ? dark : Colors.white,
+              backgroundColor: bar,
               icon: Icon(Icons.videocam),
               label: 'Meet',
             ),
             BottomNavigationBarItem(
-              backgroundColor: isDark ? dark : Colors.white,
+              backgroundColor: bar,
               icon: Icon(Icons.message),
               label: 'Chat',
             ),
             BottomNavigationBarItem(
-              backgroundColor: isDark ? dark : Colors.white,
+              backgroundColor: bar,
               icon: Icon(Icons.calendar_today_rounded),
               label: 'Calendar',
             ),
           ],
           currentIndex: widget.currIndex,
-          selectedItemColor: Colors.indigoAccent,
+          selectedLabelStyle: GoogleFonts.montserrat(),
+          unselectedLabelStyle: GoogleFonts.montserrat(),
+          selectedItemColor: primary,
           onTap: (index) {
             setState(() {
               widget.currIndex = index;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// User profile avatar
 class Avatar extends StatelessWidget {
   final double width;
   final double height;

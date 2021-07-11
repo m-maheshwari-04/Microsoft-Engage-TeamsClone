@@ -8,6 +8,7 @@ import 'package:team_clone/Calendar/notifications.dart';
 import 'package:team_clone/Widget/Toast.dart';
 import 'package:team_clone/constants.dart';
 
+/// Dialog for adding new task
 class AddTask extends StatefulWidget {
   final int date;
   final int month;
@@ -29,6 +30,7 @@ class _AddTaskState extends State<AddTask> {
     super.initState();
   }
 
+  /// Add task dialog UI
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -38,7 +40,7 @@ class _AddTaskState extends State<AddTask> {
         padding: EdgeInsets.all(10),
         height: 400.h,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: light,
           borderRadius: BorderRadius.circular(20.0),
         ),
         child: Column(
@@ -55,13 +57,13 @@ class _AddTaskState extends State<AddTask> {
                   Text(
                     'Add Task',
                     style: GoogleFonts.montserrat(
-                        fontSize: 22.sp,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black),
+                      fontSize: 22.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   FlatButton(
                     onPressed: saveTask,
-                    child: Icon(Icons.done, size: 30.sp, color: Colors.black),
+                    child: Icon(Icons.done, size: 30.sp),
                   ),
                 ],
               ),
@@ -75,7 +77,6 @@ class _AddTaskState extends State<AddTask> {
               child: Text(
                 'Time',
                 style: GoogleFonts.montserrat(
-                  color: Colors.black,
                   fontSize: 14.sp,
                 ),
               ),
@@ -87,14 +88,17 @@ class _AddTaskState extends State<AddTask> {
     );
   }
 
+  /// Title and description input fields
   Widget fieldInput(TextEditingController controller, String hint) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: TextField(
         controller: controller,
+        cursorColor: isDark ? Colors.white70 : Colors.black87,
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: GoogleFonts.montserrat(fontSize: 16.sp, color: Colors.grey),
+          hintStyle:
+              GoogleFonts.montserrat(fontSize: 16.sp, color: Colors.grey),
           contentPadding: const EdgeInsets.symmetric(vertical: 10.0),
           isDense: true,
           enabledBorder: UnderlineInputBorder(
@@ -107,7 +111,6 @@ class _AddTaskState extends State<AddTask> {
               UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
         ),
         style: GoogleFonts.montserrat(
-          color: Colors.black,
           fontSize: 18,
         ),
         textInputAction:
@@ -122,13 +125,13 @@ class _AddTaskState extends State<AddTask> {
       child: Text(
         text,
         style: GoogleFonts.montserrat(
-          color: Colors.black,
           fontSize: 14.sp,
         ),
       ),
     );
   }
 
+  /// Adding task to calendar
   void saveTask() async {
     if (_editingControllerDescription.text.isEmpty ||
         _editingControllerTitle.text.isEmpty) {
@@ -136,6 +139,7 @@ class _AddTaskState extends State<AddTask> {
       return;
     }
 
+    /// Setting notification for added task using local notications package
     taskReminder(
         _editingControllerTitle.text,
         _editingControllerDescription.text,
@@ -145,6 +149,7 @@ class _AddTaskState extends State<AddTask> {
         _dateTime.hour,
         _dateTime.minute);
 
+    /// Using the task date as key for accessing it later
     DateTime taskDate = DateTime(widget.year, widget.month, widget.date);
     String taskKey = taskDate.toString();
 
@@ -165,6 +170,8 @@ class _AddTaskState extends State<AddTask> {
         ]
       ];
     }
+
+    /// Sorting tasks of a day according to their time
     tasks[taskKey].sort((List<Object> a, List<Object> b) {
       if (int.parse(a.elementAt(0).toString()) <
           int.parse(b.elementAt(0).toString())) {
@@ -188,14 +195,20 @@ class _AddTaskState extends State<AddTask> {
     Navigator.of(context).pop();
   }
 
+  /// Time picker
   Widget buildTimePicker() => SizedBox(
         height: 120,
-        child: CupertinoDatePicker(
-          initialDateTime: _dateTime,
-          mode: CupertinoDatePickerMode.time,
-          minuteInterval: 1,
-          onDateTimeChanged: (dateTime) =>
-              setState(() => this._dateTime = dateTime),
+        child: CupertinoTheme(
+          data: CupertinoThemeData(
+            brightness: isDark ? Brightness.dark : Brightness.light,
+          ),
+          child: CupertinoDatePicker(
+            initialDateTime: _dateTime,
+            mode: CupertinoDatePickerMode.time,
+            minuteInterval: 1,
+            onDateTimeChanged: (dateTime) =>
+                setState(() => this._dateTime = dateTime),
+          ),
         ),
       );
 }

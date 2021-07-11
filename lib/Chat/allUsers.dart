@@ -3,8 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'chat.dart';
 import 'package:team_clone/constants.dart';
 import 'user_model.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'avatar.dart';
 
+/// UI for selecting a user from all available users
 class AllUsers extends StatefulWidget {
   @override
   _AllUsersState createState() => _AllUsersState();
@@ -15,7 +17,7 @@ class _AllUsersState extends State<AllUsers> {
   List chats = [];
   List allChats = [];
 
-  Widget buildRecentChat(UserModel user, BuildContext context) {
+  Widget buildAllUsers(UserModel user, BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
@@ -37,8 +39,13 @@ class _AllUsersState extends State<AllUsers> {
           ),
         );
       },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6.0),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          color: light,
+        ),
+        padding: EdgeInsets.symmetric(vertical: 4.0.h,horizontal: 8.w),
+        margin: EdgeInsets.only(bottom: 4.h),
         child: Row(
           children: [
             Avatar(url: user.imgUrl),
@@ -78,6 +85,7 @@ class _AllUsersState extends State<AllUsers> {
     getChats();
   }
 
+  /// Set all users list
   void getChats() async {
     chats.clear();
     allChats.clear();
@@ -93,7 +101,7 @@ class _AllUsersState extends State<AllUsers> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: isDark ? dark : Colors.white,
+        backgroundColor: dark,
         appBar: AppBar(title: Text('New Chat',style: GoogleFonts.montserrat(),)),
         body: Column(
           children: [
@@ -103,22 +111,21 @@ class _AllUsersState extends State<AllUsers> {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.0),
                 decoration: BoxDecoration(
-                    color: !isDark ? dark : Colors.white,
-                    borderRadius: BorderRadius.circular(30.0)),
+                    color: light, borderRadius: BorderRadius.circular(30.0)),
                 child: Row(
                   children: <Widget>[
                     Container(
                         padding: EdgeInsets.all(6.0),
                         decoration: BoxDecoration(
-                            color: Color(0xfff3f2ee), shape: BoxShape.circle),
+                            color:dark, shape: BoxShape.circle),
                         child: Icon(
                           Icons.search,
                           size: 16.0,
-                          color: Theme.of(context).primaryColor,
                         )),
                     SizedBox(width: 12.0),
                     Expanded(
                       child: TextField(
+                        cursorColor: isDark?Colors.white70:Colors.black87,
                         controller: searchController,
                         onChanged: (value) {
                           if (value.isEmpty || value.length == 0) {
@@ -140,14 +147,10 @@ class _AllUsersState extends State<AllUsers> {
                           }
                           setState(() {});
                         },
-                        style: GoogleFonts.montserrat(
-                            color: isDark ? light : Colors.white,
-                            fontSize: 16.0),
+                        style: GoogleFonts.montserrat(fontSize: 16.0),
                         decoration: InputDecoration(
                             hintText: 'Search...',
-                            hintStyle: GoogleFonts.montserrat(
-                              color: isDark ? light : Colors.white,
-                            ),
+                            hintStyle: GoogleFonts.montserrat(),
                             filled: false,
                             border: InputBorder.none,
                             isDense: true,
@@ -164,7 +167,7 @@ class _AllUsersState extends State<AllUsers> {
                 padding: EdgeInsets.symmetric(horizontal: 12.0),
                 itemCount: chats.length,
                 itemBuilder: (BuildContext ctx, int index) =>
-                    buildRecentChat(chats[index], context),
+                    buildAllUsers(chats[index], context),
               ),
             )
           ],

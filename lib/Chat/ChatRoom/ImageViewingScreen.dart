@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:team_clone/constants.dart';
 
+/// View of image in chat
 class ImageView extends StatelessWidget {
   ImageView({required this.url});
 
@@ -23,7 +25,7 @@ class ImageView extends StatelessWidget {
               imageProvider: NetworkImage('$url'),
               loadingBuilder: (context, _progress) => Center(
                   child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+                valueColor: AlwaysStoppedAnimation<Color>(primary),
                 value: _progress == null
                     ? null
                     : _progress.cumulativeBytesLoaded /

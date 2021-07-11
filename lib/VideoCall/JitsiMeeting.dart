@@ -11,7 +11,10 @@ import 'package:team_clone/Widget/Toast.dart';
 import 'package:team_clone/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+/// All functionalities related to Jitsi
+///
 class JitsiMeeting {
+  /// Joining video call
   static joinMeeting(
       String roomCode, String? roomName, bool audio, bool video) async {
     String? serverUrl;
@@ -22,6 +25,7 @@ class JitsiMeeting {
 
     featureFlags[FeatureFlagEnum.CALL_INTEGRATION_ENABLED] = false;
 
+    /// Setting options for joining video call
     var options = JitsiMeetingOptions(room: roomCode)
       ..serverURL = serverUrl
       ..subject = roomName
@@ -63,6 +67,7 @@ class JitsiMeeting {
     );
   }
 
+  /// Dialog for creating or joining Jitsi meet
   static void meeting(BuildContext context, bool newMeeting) {
     bool audio = false;
     bool video = false;
@@ -82,6 +87,8 @@ class JitsiMeeting {
         roomCode.substring(5, 8);
     roomCode = roomCode.toUpperCase();
 
+    /// If new meeting is created then the roomCode is added to firebase and
+    /// a group chat is created which other users will join using roomCode
     if (newMeeting) {
       FirebaseFirestore.instance
           .collection('Jitsi')
@@ -135,7 +142,7 @@ class JitsiMeeting {
             filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
             child: AlertDialog(
               buttonPadding: EdgeInsets.all(10),
-              backgroundColor: isDark ? dark : Colors.white,
+              backgroundColor: dark,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20.0))),
               title: Text(
@@ -170,8 +177,10 @@ class JitsiMeeting {
                           SizedBox(width: 20.w),
                           GestureDetector(
                             onTap: () {
+                              /// Copy roomCode
                               FlutterClipboard.copy(roomCode)
                                   .then((value) => print('copied'));
+                              toast('Link copied to clipboard');
                             },
                             onTapDown: (value) {
                               setState(() {
@@ -196,12 +205,13 @@ class JitsiMeeting {
                           ),
                           GestureDetector(
                             onTap: () async {
+                              /// Share roomCode
                               await FlutterShare.share(
-                                  title: 'Team Clone',
+                                  title: 'Teams',
                                   text:
-                                      'To join the meeting on Team-Clone use the code \n\n$roomCode',
+                                      'To join the meeting on Teams use the code \n\n$roomCode \n\nDownload from:',
                                   linkUrl: 'https://bit.ly/3hkQhmV',
-                                  chooserTitle: 'Example Chooser Title');
+                                  chooserTitle: 'Teams');
                             },
                             onTapDown: (value) {
                               setState(() {
@@ -229,19 +239,16 @@ class JitsiMeeting {
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 20),
                       decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(15.0),
-                          border: Border.all(color: light)),
-                      child: TextFormField(
-                        cursorColor: light,
-                        style: GoogleFonts.montserrat(
                           color: light,
-                        ),
+                          borderRadius: BorderRadius.circular(15.0),
+                          border: Border.all(color: dark)),
+                      child: TextFormField(
+                        cursorColor: isDark ? Colors.white70 : Colors.black87,
+                        style: GoogleFonts.montserrat(),
                         controller: room,
                         decoration: InputDecoration(
                           hintText: newMeeting ? "Room Name" : "Room Code",
                           hintStyle: GoogleFonts.montserrat(color: Colors.grey),
-                          labelStyle: GoogleFonts.montserrat(color: light),
                           alignLabelWithHint: true,
                           contentPadding:
                               EdgeInsets.symmetric(vertical: 6, horizontal: 10),
@@ -256,6 +263,7 @@ class JitsiMeeting {
                         ),
                       ),
                     ),
+                    /// Audio toggle
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -266,7 +274,7 @@ class JitsiMeeting {
                         Transform.scale(
                           scale: 0.8,
                           child: CupertinoSwitch(
-                            activeColor: light,
+                            activeColor: primary,
                             value: audio,
                             onChanged: (bool? value) {
                               setState(() {
@@ -280,6 +288,7 @@ class JitsiMeeting {
                     SizedBox(
                       height: 5.0,
                     ),
+                    /// Video toggle
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -290,7 +299,7 @@ class JitsiMeeting {
                         Transform.scale(
                           scale: 0.8,
                           child: CupertinoSwitch(
-                            activeColor: light,
+                            activeColor: primary,
                             value: video,
                             onChanged: (bool? value) {
                               setState(() {
@@ -316,7 +325,7 @@ class JitsiMeeting {
                 FlatButton(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
-                  color: light,
+                  color: primary,
                   child: Text(
                     newMeeting ? 'Create' : 'Join',
                     style: GoogleFonts.montserrat(color: Colors.white),
@@ -337,6 +346,7 @@ class JitsiMeeting {
     );
   }
 
+  /// Called when new room is created
   static void createRoom(String roomCode, String roomName, bool audio,
       bool video, BuildContext context) {
     if (roomName.length == 0) {
@@ -345,15 +355,18 @@ class JitsiMeeting {
     }
     Navigator.of(context).pop();
 
+    /// Updating groupName in firebase
     String groupId = roomCode + '!@#%^&*(';
     FirebaseFirestore.instance
         .collection('group')
         .doc(groupId)
         .set({'name': roomName}, SetOptions(merge: true));
 
+    /// Join video call
     joinMeeting(roomCode, roomName, audio, video);
   }
 
+  /// Called when user is joining with a roomCode
   static void joinRoom(
       String roomCode, bool audio, bool video, BuildContext context) {
     if (roomCode.length != 10) {
@@ -361,6 +374,8 @@ class JitsiMeeting {
       return;
     }
     roomCode = roomCode.toUpperCase();
+
+    /// Checking is room code is valid or not
     FirebaseFirestore.instance
         .collection('Jitsi')
         .doc('roomId')
@@ -372,6 +387,8 @@ class JitsiMeeting {
         return;
       }
 
+      /// If room code is valid then user is added to group chat and
+      /// joins the video call
       String groupId = roomCode + '!@#%^&*(';
 
       FirebaseFirestore.instance.collection('group').doc(groupId).update({

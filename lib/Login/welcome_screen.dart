@@ -9,6 +9,10 @@ import 'package:team_clone/constants.dart';
 import 'package:team_clone/main.dart';
 import 'package:team_clone/Login/login_screen.dart';
 
+/// Welcome Screen widget
+///
+/// - Overview of app
+/// - Button to login page
 class WelcomeScreen extends StatefulWidget {
   @override
   _WelcomeScreenState createState() => _WelcomeScreenState();
@@ -16,45 +20,41 @@ class WelcomeScreen extends StatefulWidget {
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
   int _current = 0;
-  Color colorPrimary = light;
   CarouselController buttonCarouselController = CarouselController();
 
   @override
   void initState() {
     super.initState();
     isDark = themeChangeProvider.darkTheme;
-    print(isDark);
     setState(() {});
   }
 
+  /// Welcome screen overview options
   List<Widget> carouselList = [
     CarouselItem(
-      title: 'Microsoft Teams',
+      title: 'Teams',
       subtitle: 'Meeting Time!',
-      colour: Colors.white,
       image: '1.png',
     ),
     CarouselItem(
-      title: 'Microsoft Teams',
-      subtitle:
-          'Get started with your work, school or personal Microsoft account',
-      colour: Colors.white,
+      title: 'Teams',
+      subtitle: 'Get started with your school, college or corporate work',
       image: '2.png',
     ),
     CarouselItem(
-      title: 'Microsoft Teams',
-      subtitle: 'Get reminders for your scheduled meetings',
-      colour: Colors.white,
+      title: 'Teams',
+      subtitle: 'Get reminders for your tasks',
       image: '3.png',
     )
   ];
 
+  /// UI of login screen
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     return Scaffold(
-      backgroundColor: isDark ? dark : Colors.white,
+      backgroundColor: dark,
       body: Column(
         children: [
           Expanded(
@@ -93,8 +93,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: _current == index
-                                ? Color(0xFF0C0D13)
-                                : Color(0xFF8085A7),
+                                ? primary
+                                : primary.withOpacity(0.3),
                           ),
                         );
                       }).toList(),
@@ -102,9 +102,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   ),
                 ),
                 FlatButton(
-                  color: _current == carouselList.length - 1
-                      ? colorPrimary
-                      : colorPrimary,
+                  color: primary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(100),
                   ),

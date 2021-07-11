@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+/// Toast to display some error or wrong input
 Future<bool?> toast(String message) {
   return Fluttertoast.showToast(
       msg: message,

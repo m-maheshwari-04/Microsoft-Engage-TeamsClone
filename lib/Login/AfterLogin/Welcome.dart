@@ -10,21 +10,18 @@ class Welcome extends StatefulWidget {
   _WelcomeState createState() => _WelcomeState();
 }
 
-List features = [
-  [
-    'login.jpg',
-    'Chat with friends and family',
-    "Reach anyone if they don't have Teams"
-  ],
-  [
-    'login.jpg',
-    'Free Video Calls',
-    "Check in with friends or catch up with the whole family - without limits"
-  ],
-  ['login.jpg', 'Privacy', "Your privacy is important to us."]
-];
 
 class _WelcomeState extends State<Welcome> {
+
+  List features = [
+    ['noChat.png', 'Connect with friends instantly'],
+    ['1.png', 'Free Video Calls'],
+    ['photo.png', 'Share your moments'],
+    ['3.png', 'Manage your tasks'],
+    ['notes.png', 'Manage your notes'],
+    ['login.png', 'Email your chat']
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,32 +49,20 @@ class _WelcomeState extends State<Welcome> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                WelcomeList(
-                  img: features[0][0],
-                  heading: features[0][1],
-                  desc: features[0][2],
-                ),
-                WelcomeList(
-                  img: features[1][0],
-                  heading: features[1][1],
-                  desc: features[1][2],
-                ),
-                WelcomeList(
-                  img: features[2][0],
-                  heading: features[2][1],
-                  desc: features[2][2],
-                ),
+                WelcomeList(img: features[0][0], heading: features[0][1]),
+                WelcomeList(img: features[1][0], heading: features[1][1]),
+                WelcomeList(img: features[2][0], heading: features[2][1]),
+                WelcomeList(img: features[3][0], heading: features[3][1]),
+                WelcomeList(img: features[4][0], heading: features[4][1]),
+                WelcomeList(img: features[5][0], heading: features[5][1]),
               ],
             ),
-          ),
-          SizedBox(
-            height: 50,
           ),
           ElevatedButton(
               style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5)),
-                  primary: light),
+                  primary: primary),
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 12, horizontal: 100),
                 child: Text(

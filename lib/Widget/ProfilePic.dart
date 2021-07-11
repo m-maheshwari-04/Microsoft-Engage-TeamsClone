@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:team_clone/constants.dart';
 import '../Login/AfterLogin/Profile.dart';
 
+/// Profile pic select screen
 class ProfilePic extends StatefulWidget {
   final File image;
   ProfilePic({required this.image});
@@ -20,23 +21,27 @@ class _ProfilePicState extends State<ProfilePic> {
   final picker = ImagePicker();
   var progress;
 
+  @override
+  void initState() {
+    pickedImage = widget.image;
+    super.initState();
+  }
+
+  /// Crop selected photo
   Future<Null> _cropImage() async {
     File? croppedFile = await ImageCropper.cropImage(
         sourcePath: pickedImage!.path,
         cropStyle: CropStyle.circle,
-        aspectRatioPresets: Platform.isAndroid
-            ? [
-                CropAspectRatioPreset.square,
-              ]
-            : [
-                CropAspectRatioPreset.square,
-              ],
+        aspectRatioPresets: [
+          CropAspectRatioPreset.square,
+        ],
         androidUiSettings: AndroidUiSettings(
             toolbarTitle: 'Crop Image',
             toolbarWidgetColor: Colors.white,
             initAspectRatio: CropAspectRatioPreset.original,
+            activeControlsWidgetColor: primary,
             lockAspectRatio: false,
-            toolbarColor: dark),
+            toolbarColor: primary),
         iosUiSettings: IOSUiSettings(
           title: 'Crop Image',
         ));
@@ -48,20 +53,15 @@ class _ProfilePicState extends State<ProfilePic> {
   }
 
   @override
-  void initState() {
-    pickedImage = widget.image;
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: dark,
       appBar: AppBar(
-        title: Text('Image Preview',style: GoogleFonts.montserrat()),
+        title: Text('Image Preview', style: GoogleFonts.montserrat()),
         elevation: 4,
       ),
       body: ProgressHUD(
-        indicatorColor: isDark ? Colors.white : light,
+        indicatorColor: primary,
         backgroundColor: Colors.transparent,
         borderColor: Colors.transparent,
         child: Builder(builder: (context) {
@@ -77,10 +77,7 @@ class _ProfilePicState extends State<ProfilePic> {
                         onPressed: _cropImage,
                         child: Text(
                           'CROP PHOTO',
-                          style: GoogleFonts.montserrat(
-                            fontSize: 18,
-                            color: Theme.of(context).buttonColor,
-                          ),
+                          style: GoogleFonts.montserrat(fontSize: 18),
                         ),
                       ),
                 FlatButton(
@@ -91,10 +88,7 @@ class _ProfilePicState extends State<ProfilePic> {
                   },
                   child: Text(
                     'UPLOAD PHOTO',
-                    style: GoogleFonts.montserrat(
-                      fontSize: 18,
-                      color: Theme.of(context).buttonColor,
-                    ),
+                    style: GoogleFonts.montserrat(fontSize: 18),
                   ),
                 ),
               ],
@@ -126,7 +120,7 @@ class _ProfilePicState extends State<ProfilePic> {
               padding: EdgeInsets.all(5),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white,
+                color: light,
               ),
               child: CircleAvatar(
                 radius: 100,

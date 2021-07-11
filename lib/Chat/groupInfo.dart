@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:team_clone/Chat/avatar.dart';
 import 'package:team_clone/Chat/user_model.dart';
+import 'package:team_clone/Login/AfterLogin/Profile.dart';
 import 'package:team_clone/constants.dart';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,9 +13,9 @@ import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../Widget/ProfilePic.dart';
 
-File? pickedImage;
 var progress;
 
+/// Group Info widget
 class GroupInfo extends StatefulWidget {
   final String hash;
   final UserModel user;
@@ -30,7 +31,8 @@ class _GroupInfoState extends State<GroupInfo> {
 
   Map<String, bool> selected = Map();
 
-  Widget buildRecentChat(UserModel user, BuildContext context) {
+  /// UI of user list
+  Widget buildUsers(UserModel user, BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
@@ -44,7 +46,7 @@ class _GroupInfoState extends State<GroupInfo> {
             color: light.withOpacity(
                 (selected[user.uid] == null || selected[user.uid] == false)
                     ? 0
-                    : 0.3),
+                    : 1),
             borderRadius: BorderRadius.all(Radius.circular(10))),
         child: Row(
           children: [
@@ -56,7 +58,8 @@ class _GroupInfoState extends State<GroupInfo> {
               children: [
                 Text(
                   user.name,
-                  style:GoogleFonts.montserrat(fontSize: 16.0, fontWeight: FontWeight.w600),
+                  style: GoogleFonts.montserrat(
+                      fontSize: 15.0, fontWeight: FontWeight.w400),
                 ),
                 SizedBox(height: 2.0),
                 Text(user.id,
@@ -65,7 +68,7 @@ class _GroupInfoState extends State<GroupInfo> {
                     style: GoogleFonts.montserrat(
                         color: Colors.grey,
                         fontSize: 14.0,
-                        fontWeight: FontWeight.w400))
+                        fontWeight: FontWeight.w300))
               ],
             )),
             SizedBox(width: 8.0),
@@ -82,6 +85,7 @@ class _GroupInfoState extends State<GroupInfo> {
     getUsers();
   }
 
+  /// Initializing list specifying whether user present in the group or not
   void getUsers() async {
     allChats.clear();
     allUsers.forEach((key, value) {
@@ -94,27 +98,26 @@ class _GroupInfoState extends State<GroupInfo> {
     setState(() {});
   }
 
+  /// UI of group info
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: isDark ? dark : Colors.white,
+        backgroundColor: dark,
         appBar: AppBar(
           elevation: 0.4,
-          backgroundColor: isDark ? dark : Colors.white,
-          iconTheme: IconThemeData(color: !isDark ? dark : Colors.white),
+          backgroundColor: bar,
           title: Text(
             'Edit group details',
-            style:GoogleFonts.montserrat(
-                fontSize: 16.sp, color: !isDark ? dark : Colors.white),
+            style: GoogleFonts.montserrat(fontSize: 16.sp),
           ),
           actions: <Widget>[
             IconButton(
               icon: Icon(
                 Icons.done,
-                color: !isDark ? dark : Colors.white,
               ),
               onPressed: () async {
+                /// Updating group info
                 progress.show();
 
                 String imgUrl = defaultGroup;
@@ -185,7 +188,7 @@ class _GroupInfoState extends State<GroupInfo> {
           ],
         ),
         body: ProgressHUD(
-          indicatorColor: isDark ? Colors.white : light,
+          indicatorColor: primary,
           backgroundColor: Colors.transparent,
           borderColor: Colors.transparent,
           child: Builder(
@@ -201,7 +204,7 @@ class _GroupInfoState extends State<GroupInfo> {
                   ),
                   CircleAvatar(
                     radius: 60.0,
-                    backgroundColor: isDark ? Colors.white : Colors.black,
+                    backgroundColor: light,
                     child: CircleAvatar(
                       radius: 58.0,
                       child: ClipOval(
@@ -220,7 +223,7 @@ class _GroupInfoState extends State<GroupInfo> {
                                 ),
                         ),
                       ),
-                      backgroundColor: isDark ? dark : Colors.white,
+                      backgroundColor: light,
                     ),
                   ),
                   Container(
@@ -238,7 +241,7 @@ class _GroupInfoState extends State<GroupInfo> {
                       decoration: InputDecoration(
                         hintText: "Group name",
                         hintStyle: GoogleFonts.montserrat(color: Colors.black),
-                        labelStyle:GoogleFonts.montserrat(color: Colors.black),
+                        labelStyle: GoogleFonts.montserrat(color: Colors.black),
                         alignLabelWithHint: true,
                         contentPadding:
                             EdgeInsets.symmetric(vertical: 15, horizontal: 10),
@@ -259,7 +262,6 @@ class _GroupInfoState extends State<GroupInfo> {
                       'Add / Remove users from this group:',
                       maxLines: 3,
                       style: GoogleFonts.montserrat(
-                        color: isDark ? Colors.white : Colors.black,
                         fontSize: 16.0,
                       ),
                     ),
@@ -269,7 +271,7 @@ class _GroupInfoState extends State<GroupInfo> {
                       padding: EdgeInsets.symmetric(horizontal: 12.0.w),
                       itemCount: allChats.length,
                       itemBuilder: (BuildContext ctx, int index) =>
-                          buildRecentChat(allChats[index], context),
+                          buildUsers(allChats[index], context),
                     ),
                   ),
                 ],
@@ -281,6 +283,7 @@ class _GroupInfoState extends State<GroupInfo> {
     );
   }
 
+  /// Select image from gallery or take new picture
   Future<void> chooseDialog() {
     return showDialog(
       context: context,

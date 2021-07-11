@@ -1,5 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
+import 'package:team_clone/constants.dart';
 
 class DarkThemePreference {
   static const THEME_STATUS = "THEMESTATUS";
@@ -24,6 +25,16 @@ class DarkThemeProvider with ChangeNotifier {
   set darkTheme(bool value) {
     _darkTheme = value;
     darkThemePreference.setDarkTheme(value);
+    if(value){
+      light=darkThemeLight;
+      dark=darkThemeDark;
+      bar=darkThemeBar;
+    }
+    else{
+      light=lightThemeLight;
+      dark=lightThemeDark;
+      bar=lightThemeBar;
+    }
     notifyListeners();
   }
 }

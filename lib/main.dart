@@ -52,6 +52,7 @@ Future<void> main() async {
 
 Future<void> _messageHandler(RemoteMessage message) async {}
 
+/// The entry point of the application.
 class MyApp extends StatefulWidget {
   MyApp({required this.screenToShow});
 
@@ -88,20 +89,21 @@ class _MyAppState extends State<MyApp> {
                 ? ThemeData(
                     brightness: Brightness.dark,
                     accentColor: light,
-                    primaryColor: dark,
+                    primaryColor: bar,
                     canvasColor: dark,
+
                     textSelectionTheme: TextSelectionThemeData(
-                      cursorColor: light,
+                      cursorColor: Colors.white70,
                       selectionHandleColor: light,
                     ),
                   )
                 : ThemeData(
                     brightness: Brightness.light,
                     accentColor: light,
-                    primaryColor: dark,
+                    primaryColor: bar,
                     canvasColor: dark,
                     textSelectionTheme: TextSelectionThemeData(
-                      cursorColor: light,
+                      cursorColor: Colors.black87,
                       selectionHandleColor: light,
                     ),
                     backgroundColor: Colors.white),

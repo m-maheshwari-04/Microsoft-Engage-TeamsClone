@@ -32,6 +32,7 @@ class _ProfileState extends State<Profile> {
   @override
   void initState() {
     super.initState();
+    pickedImage = null;
     if (currentUser!.photoURL != null) {
       photoUrl = currentUser!.photoURL!;
     }
@@ -41,9 +42,9 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: isDark ? dark : Colors.white,
+        backgroundColor: dark,
         body: ProgressHUD(
-          indicatorColor: isDark ? Colors.white : light,
+          indicatorColor: primary,
           backgroundColor: Colors.transparent,
           borderColor: Colors.transparent,
           child: Builder(
@@ -65,9 +66,7 @@ class _ProfileState extends State<Profile> {
                         "Your Profile",
                         style: GoogleFonts.montserrat(
                           textStyle: GoogleFonts.montserrat(
-                              fontSize: 24,
-                              color: isDark ? Colors.white : Colors.black,
-                              fontWeight: FontWeight.w500),
+                              fontSize: 24, fontWeight: FontWeight.w500),
                         ),
                       ),
                     ),
@@ -75,7 +74,7 @@ class _ProfileState extends State<Profile> {
                       children: [
                         CircleAvatar(
                           radius: 85.0,
-                          backgroundColor: isDark ? Colors.white : Colors.black,
+                          backgroundColor: light,
                           child: CircleAvatar(
                             radius: 82.0,
                             child: GestureDetector(
@@ -95,7 +94,7 @@ class _ProfileState extends State<Profile> {
                                       ),
                               ),
                             ),
-                            backgroundColor: isDark ? dark : Colors.white,
+                            backgroundColor: light,
                           ),
                         ),
                         TextButton(
@@ -123,19 +122,19 @@ class _ProfileState extends State<Profile> {
                       child: Container(
                         margin: EdgeInsets.symmetric(vertical: 10),
                         decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: light,
                             borderRadius: BorderRadius.circular(10.0),
                             border: Border.all(color: light)),
                         child: TextFormField(
-                          cursorColor: light,
-                          style:GoogleFonts.montserrat(
-                            color: light,
-                          ),
+                          cursorColor: isDark ? Colors.white70 : Colors.black87,
+                          style: GoogleFonts.montserrat(),
                           controller: name,
                           decoration: InputDecoration(
                             hintText: "Your name",
-                            hintStyle:GoogleFonts.montserrat(color: light),
-                            labelStyle: GoogleFonts.montserrat(color: light),
+                            hintStyle:
+                                GoogleFonts.montserrat(color: Colors.grey),
+                            labelStyle:
+                                GoogleFonts.montserrat(color: Colors.grey),
                             alignLabelWithHint: true,
                             contentPadding: EdgeInsets.symmetric(
                                 vertical: 15, horizontal: 10),
@@ -159,7 +158,6 @@ class _ProfileState extends State<Profile> {
                             'Your picture and name will be visible to others on Teams. People can find you on Teams by:',
                             maxLines: 3,
                             style: GoogleFonts.montserrat(
-                              color: isDark ? Colors.white : Colors.black,
                               fontSize: 16.0,
                             ),
                           ),
@@ -171,7 +169,6 @@ class _ProfileState extends State<Profile> {
                             currentUser!.email ?? currentUser!.phoneNumber!,
                             maxLines: 1,
                             style: GoogleFonts.montserrat(
-                              color: isDark ? Colors.white : Colors.black,
                               fontSize: 16.0,
                             ),
                           ),
@@ -185,7 +182,7 @@ class _ProfileState extends State<Profile> {
                         style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5)),
-                            primary: light),
+                            primary: primary),
                         child: Padding(
                           padding: EdgeInsets.symmetric(
                               vertical: 12, horizontal: 100),
@@ -205,22 +202,11 @@ class _ProfileState extends State<Profile> {
 
                           progress.show();
 
-                          await currentUser!.updateDisplayName(name.text);
+                          await Future.wait([updateName(), updateImage()])
+                              .then((List responses) async {
+                            currentUser = await FirebaseAuth.instance.currentUser;
+                          });
 
-                          String imgUrl = photoUrl;
-                          if (pickedImage != null) {
-                            final file = File(pickedImage!.path);
-                            TaskSnapshot upload = await _firestore
-                                .ref()
-                                .child('profile')
-                                .child(currentUser!.uid)
-                                .putFile(file);
-                            if (upload.state == TaskState.success) {
-                              imgUrl = await upload.ref.getDownloadURL();
-                            }
-                          }
-                          await currentUser!.updatePhotoURL(imgUrl);
-                          currentUser = FirebaseAuth.instance.currentUser;
                           progress.dismiss();
 
                           String? token =
@@ -262,6 +248,27 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  Future updateName() async {
+    return await currentUser!.updateDisplayName(name.text);
+  }
+
+  Future updateImage() async {
+    String imgUrl = photoUrl;
+    if (pickedImage != null) {
+      final file = File(pickedImage!.path);
+      TaskSnapshot upload = await _firestore
+          .ref()
+          .child('profile')
+          .child(currentUser!.uid)
+          .putFile(file);
+      if (upload.state == TaskState.success) {
+        imgUrl = await upload.ref.getDownloadURL();
+      }
+    }
+    return await currentUser!.updatePhotoURL(imgUrl);
+  }
+
+  /// Select image from gallery or take new picture
   Future<void> chooseDialog() {
     return showDialog(
       context: context,

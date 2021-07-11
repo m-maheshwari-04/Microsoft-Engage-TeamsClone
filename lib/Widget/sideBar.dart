@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:team_clone/constants.dart';
 
+/// Drawer options UI
 class SidebarTile extends StatelessWidget {
   final pageName;
   final page;
@@ -18,7 +19,7 @@ class SidebarTile extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             boxShadow: isDark ? darkShadow : lightShadow,
-            color: light.withOpacity(0.8),
+            color: primary,
             borderRadius: BorderRadius.all(
               Radius.circular(14),
             ),
@@ -27,7 +28,7 @@ class SidebarTile extends StatelessWidget {
             margin: EdgeInsets.only(left: 12.0),
             child: Container(
               decoration: BoxDecoration(
-                color: isDark ? dark : Colors.white,
+                color: light,
                 borderRadius: BorderRadius.only(
                   topRight: Radius.circular(14),
                   bottomRight: Radius.circular(14),
@@ -50,7 +51,6 @@ class SidebarTile extends StatelessWidget {
                               width: 150,
                               child: AutoSizeText(pageName,
                                   style: GoogleFonts.montserrat(
-                                    color: isDark ? Colors.white : Colors.black,
                                   )),
                             ),
                           ],

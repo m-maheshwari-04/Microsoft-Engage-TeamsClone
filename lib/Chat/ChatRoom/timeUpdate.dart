@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:team_clone/constants.dart';
 
+/// Update latest message timestamp in firebase
 void updateTime(String hash, String message) {
   FirebaseFirestore.instance.collection('chat').doc(hash).set({
     'text': message,

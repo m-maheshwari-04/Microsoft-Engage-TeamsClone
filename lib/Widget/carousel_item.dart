@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+/// Welcome screen carousel
 class CarouselItem extends StatelessWidget {
   CarouselItem(
-      {required this.title,
-      required this.subtitle,
-      required this.colour,
-      required this.image});
+      {required this.title, required this.subtitle, required this.image});
   final String title;
   final String subtitle;
-  final Color colour;
   final String image;
 
   @override
@@ -36,7 +34,7 @@ class CarouselItem extends StatelessWidget {
           ),
         ),
         Image(
-          height: 400,
+          height: 400.h,
           image: AssetImage('images/$image'),
           fit: BoxFit.scaleDown,
         ),

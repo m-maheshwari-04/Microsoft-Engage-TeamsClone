@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:random_string/random_string.dart';
 import 'package:team_clone/Chat/avatar.dart';
 import 'package:team_clone/Chat/user_model.dart';
+import 'package:team_clone/Login/AfterLogin/Profile.dart';
 import 'package:team_clone/Widget/Toast.dart';
 import 'package:team_clone/constants.dart';
 import 'dart:io';
@@ -15,9 +16,9 @@ import 'package:google_fonts/google_fonts.dart';
 import '../Widget/ProfilePic.dart';
 
 final _firestore = FirebaseStorage.instance;
-File? pickedImage;
 var progress;
 
+/// Create new group widget
 class CreateGroup extends StatefulWidget {
   @override
   _CreateGroupState createState() => _CreateGroupState();
@@ -25,11 +26,11 @@ class CreateGroup extends StatefulWidget {
 
 class _CreateGroupState extends State<CreateGroup> {
   final groupName = TextEditingController();
-  List allChats = [];
+  List userList = [];
 
   Map<String, bool> selected = Map();
 
-  Widget buildRecentChat(UserModel user, BuildContext context) {
+  Widget buildUserList(UserModel user, BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
@@ -43,7 +44,7 @@ class _CreateGroupState extends State<CreateGroup> {
             color: light.withOpacity(
                 (selected[user.uid] == null || selected[user.uid] == false)
                     ? 0
-                    : 0.3),
+                    : 1),
             borderRadius: BorderRadius.all(Radius.circular(10))),
         child: Row(
           children: [
@@ -55,16 +56,17 @@ class _CreateGroupState extends State<CreateGroup> {
               children: [
                 Text(
                   user.name,
-                  style: GoogleFonts.montserrat(fontSize: 16.0, fontWeight: FontWeight.w600),
+                  style: GoogleFonts.montserrat(
+                      fontSize: 15.0, fontWeight: FontWeight.w400),
                 ),
                 SizedBox(height: 2.0),
                 Text(user.id,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style:GoogleFonts.montserrat(
+                    style: GoogleFonts.montserrat(
                         color: Colors.grey,
                         fontSize: 14.0,
-                        fontWeight: FontWeight.w400))
+                        fontWeight: FontWeight.w300))
               ],
             )),
             SizedBox(width: 8.0),
@@ -81,9 +83,9 @@ class _CreateGroupState extends State<CreateGroup> {
   }
 
   void getUsers() async {
-    allChats.clear();
+    userList.clear();
     allUsers.forEach((key, value) {
-      if (currentUser!.uid != key) allChats.add(value);
+      if (currentUser!.uid != key) userList.add(value);
     });
     setState(() {});
   }
@@ -92,10 +94,14 @@ class _CreateGroupState extends State<CreateGroup> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: isDark ? dark : Colors.white,
-        appBar: AppBar(title: Text('New Group Chat',style: GoogleFonts.montserrat(),)),
+        backgroundColor: dark,
+        appBar: AppBar(
+            title: Text(
+          'New Group Chat',
+          style: GoogleFonts.montserrat(),
+        )),
         body: ProgressHUD(
-          indicatorColor: isDark ? Colors.white : light,
+          indicatorColor: primary,
           backgroundColor: Colors.transparent,
           borderColor: Colors.transparent,
           child: Builder(
@@ -111,7 +117,7 @@ class _CreateGroupState extends State<CreateGroup> {
                   ),
                   CircleAvatar(
                     radius: 60.0,
-                    backgroundColor: isDark ? Colors.white : Colors.black,
+                    backgroundColor: light,
                     child: CircleAvatar(
                       radius: 58.0,
                       child: ClipOval(
@@ -124,7 +130,7 @@ class _CreateGroupState extends State<CreateGroup> {
                                 backgroundImage: FileImage(pickedImage!),
                               ),
                       ),
-                      backgroundColor: isDark ? dark : Colors.white,
+                      backgroundColor: light,
                     ),
                   ),
                   TextButton(
@@ -138,7 +144,7 @@ class _CreateGroupState extends State<CreateGroup> {
                         'Edit image',
                         maxLines: 1,
                         style: GoogleFonts.montserrat(
-                          color: isDark ? Colors.white : Colors.black,
+                          color: isDark?Colors.white:Colors.black,
                           fontSize: 16.0,
                         ),
                       ),
@@ -152,14 +158,14 @@ class _CreateGroupState extends State<CreateGroup> {
                         border: Border.all(color: Colors.black)),
                     child: TextFormField(
                       cursorColor: Colors.black,
-                      style:GoogleFonts.montserrat(
+                      style: GoogleFonts.montserrat(
                         color: Colors.black,
                       ),
                       controller: groupName,
                       decoration: InputDecoration(
                         hintText: "Group name",
                         hintStyle: GoogleFonts.montserrat(color: Colors.black),
-                        labelStyle:GoogleFonts.montserrat(color: Colors.black),
+                        labelStyle: GoogleFonts.montserrat(color: Colors.black),
                         alignLabelWithHint: true,
                         contentPadding:
                             EdgeInsets.symmetric(vertical: 15, horizontal: 10),
@@ -180,7 +186,6 @@ class _CreateGroupState extends State<CreateGroup> {
                       'Select the people you want to add in this group:',
                       maxLines: 3,
                       style: GoogleFonts.montserrat(
-                        color: isDark ? Colors.white : Colors.black,
                         fontSize: 16.0,
                       ),
                     ),
@@ -188,9 +193,9 @@ class _CreateGroupState extends State<CreateGroup> {
                   Expanded(
                     child: ListView.builder(
                       padding: EdgeInsets.symmetric(horizontal: 12.0.w),
-                      itemCount: allChats.length,
+                      itemCount: userList.length,
                       itemBuilder: (BuildContext ctx, int index) =>
-                          buildRecentChat(allChats[index], context),
+                          buildUserList(userList[index], context),
                     ),
                   ),
                   Padding(
@@ -199,7 +204,7 @@ class _CreateGroupState extends State<CreateGroup> {
                         style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5)),
-                            primary: light),
+                            primary: primary),
                         child: Padding(
                           padding: EdgeInsets.symmetric(
                               vertical: 12.h, horizontal: 100.w),
@@ -218,21 +223,6 @@ class _CreateGroupState extends State<CreateGroup> {
                           }
                           progress.show();
 
-                          String imgUrl = defaultGroup;
-                          String groupId = randomAlphaNumeric(18).toUpperCase();
-
-                          if (pickedImage != null) {
-                            final file = File(pickedImage!.path);
-                            TaskSnapshot upload = await _firestore
-                                .ref()
-                                .child('profile')
-                                .child(groupId)
-                                .putFile(file);
-                            if (upload.state == TaskState.success) {
-                              imgUrl = await upload.ref.getDownloadURL();
-                            }
-                          }
-
                           List users = [];
                           users.add(currentUser!.uid);
 
@@ -246,6 +236,21 @@ class _CreateGroupState extends State<CreateGroup> {
                             toast("Add at least 2 users");
                             progress.dismiss();
                             return;
+                          }
+
+                          String imgUrl = defaultGroup;
+                          String groupId = randomAlphaNumeric(18).toUpperCase();
+
+                          if (pickedImage != null) {
+                            final file = File(pickedImage!.path);
+                            TaskSnapshot upload = await _firestore
+                                .ref()
+                                .child('profile')
+                                .child(groupId)
+                                .putFile(file);
+                            if (upload.state == TaskState.success) {
+                              imgUrl = await upload.ref.getDownloadURL();
+                            }
                           }
 
                           FirebaseFirestore.instance
@@ -299,6 +304,7 @@ class _CreateGroupState extends State<CreateGroup> {
     );
   }
 
+  /// Select group image from gallery or take new picture using camera
   Future<void> chooseDialog() {
     return showDialog(
       context: context,

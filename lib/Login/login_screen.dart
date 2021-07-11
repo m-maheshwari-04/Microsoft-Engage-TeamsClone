@@ -19,6 +19,12 @@ ScrollController _scrollController = ScrollController();
 bool showError = false;
 var progress;
 
+/// Login Screen widget
+///
+/// - Login with email(OTP authentication)
+/// - Login with phone(OTP authentication)
+/// - Login with Google
+///
 class LoginScreen extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -27,42 +33,29 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool scrolled = false;
-
-  _scrollListener() {
-    if (!scrolled && MediaQuery.of(context).viewInsets.bottom != 0) {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: Duration(milliseconds: 100),
-        curve: Curves.easeOut,
-      );
-      scrolled = true;
-    }
-    if (MediaQuery.of(context).viewInsets.bottom == 0) {
-      scrolled = false;
-    }
-  }
-
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController();
-    _scrollController.addListener(_scrollListener);
     isDark = themeChangeProvider.darkTheme;
     setState(() {});
   }
 
+  /// UI of login screen
   Widget build(BuildContext context) {
+    /// Initialize firebase authentication for the app
     Authentication.initializeFirebase(context: context);
 
+    /// Portrait mode only
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
 
     return SafeArea(
       child: Scaffold(
-        backgroundColor: isDark ? dark : Colors.white,
+        backgroundColor: dark,
+
+        /// Setting loader
         body: ProgressHUD(
-          indicatorColor: isDark ? Colors.white : light,
+          indicatorColor: primary,
           backgroundColor: Colors.transparent,
           borderColor: Colors.transparent,
           child: Builder(builder: (context) {
@@ -86,7 +79,11 @@ class LoginFormWidget extends StatefulWidget {
 }
 
 class _LoginFormWidgetState extends State<LoginFormWidget> {
+  /// Variable used for selecting login type
+  /// 1- email
+  /// 2 - phone
   int loginType = 1;
+
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController phone = TextEditingController();
@@ -104,7 +101,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
         Container(
           margin: EdgeInsets.symmetric(vertical: 50.0),
           child: Text(
-            "Microsoft Teams",
+            "Teams",
             style: GoogleFonts.montserrat(
                 fontStyle: FontStyle.normal,
                 fontSize: 28,
@@ -129,15 +126,19 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                 style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
-                    primary: light.withOpacity(loginType == 1 ? 1 : 0.5)),
+                    primary: loginType == 1 ? primary : light),
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 6, horizontal: 10),
                   child: Text(
                     "Email",
                     style: GoogleFonts.montserrat(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                    ),
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        color: loginType == 1
+                            ? Colors.white
+                            : isDark
+                                ? Colors.white
+                                : Colors.black87),
                   ),
                 ),
                 onPressed: () {
@@ -149,15 +150,19 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                 style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
-                    primary: light.withOpacity(loginType == 2 ? 1 : 0.5)),
+                    primary: loginType == 2 ? primary : light),
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 6, horizontal: 10),
                   child: Text(
                     "Phone",
                     style: GoogleFonts.montserrat(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                    ),
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        color: loginType == 2
+                            ? Colors.white
+                            : isDark
+                                ? Colors.white
+                                : Colors.black87),
                   ),
                 ),
                 onPressed: () {
@@ -171,7 +176,10 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
           height: 10.h,
         ),
         loginType == 1
-            ? Column(
+            ?
+
+            /// Login with email
+            Column(
                 children: [
                   _buildEmail(context),
                   _buildPassword(context),
@@ -184,11 +192,15 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                   ),
                 ],
               )
-            : Column(
+            :
+
+            /// Login with phone
+            Column(
                 children: [
                   Container(
                     margin: EdgeInsets.only(top: 10, right: 10, left: 10),
                     child: TextField(
+                      cursorColor: isDark ? Colors.white70 : Colors.black87,
                       decoration: InputDecoration(
                         hintText: 'Phone Number',
                         prefix: Padding(
@@ -208,9 +220,9 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                     child: Text(
                       "Send OTP",
                       style: GoogleFonts.montserrat(
-                        color: isDark ? Colors.white : light,
                         fontWeight: FontWeight.w400,
                         fontSize: 17.0,
+                        color: isDark ? Colors.white : Colors.black,
                       ),
                     ),
                     onPressed: () {
@@ -223,6 +235,8 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
         SizedBox(
           height: 30.h,
         ),
+
+        /// Login with Google
         googleSignInButton(),
       ],
     );
@@ -230,7 +244,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
 
   Widget googleSignInButton() {
     return Padding(
-      padding:EdgeInsets.only(left: 20.w,right:20.w),
+      padding: EdgeInsets.only(left: 20.w, right: 20.w),
       child: OutlinedButton(
         style: ButtonStyle(
             shape: MaterialStateProperty.all(
@@ -238,8 +252,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            backgroundColor:
-                MaterialStateColor.resolveWith((states) => Colors.white)),
+            backgroundColor: MaterialStateColor.resolveWith((states) => dark)),
         onPressed: () async {
           progress.show();
           User? user = await Authentication.signInWithGoogle(context: context);
@@ -264,7 +277,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
               Text(
                 "    Continue with Google",
                 style: GoogleFonts.montserrat(
-                  color:light,
+                  color: isDark ? Colors.white : Colors.black,
                   fontWeight: FontWeight.w400,
                   fontSize: 18.0,
                 ),
@@ -276,25 +289,32 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
     );
   }
 
+  /// Email login
   Widget _buildSignIn(String buttonText) {
     return TextButton(
         child: Text(
           buttonText,
           style: GoogleFonts.montserrat(
-            color: isDark ? Colors.white : light,
+            color: isDark ? Colors.white : Colors.black,
             fontWeight: FontWeight.w400,
             fontSize: 17.0,
           ),
         ),
         onPressed: () async {
           if (email.text.isEmpty || password.text.isEmpty) {
-            toast("Invalid Details ... Try again");
-
+            toast("Please fill all the fields");
             return;
           }
+
+          if (password.text.length < 6) {
+            toast("Minimum password length is 6 characters");
+            return;
+          }
+
           progress.show();
           FirebaseAuth auth = FirebaseAuth.instance;
           try {
+            /// Verify credentials from firebase
             final UserCredential userCredential =
                 await auth.signInWithEmailAndPassword(
                     email: email.text, password: password.text);
@@ -330,10 +350,12 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
         });
   }
 
+  /// Email input field
   Widget _buildEmail(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 10),
       child: TextField(
+        cursorColor: isDark ? Colors.white70 : Colors.black87,
         controller: email,
         decoration: InputDecoration(
           hintText: 'Email',
@@ -348,10 +370,12 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
     );
   }
 
+  /// Password input field
   Widget _buildPassword(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 10),
       child: TextField(
+        cursorColor: isDark ? Colors.white70 : Colors.black87,
         decoration: InputDecoration(
           hintText: 'Password',
           prefixIcon: Icon(
@@ -376,8 +400,9 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
     );
   }
 
+  /// Send OTP to email
   void sendOtp() async {
-    EmailAuth.sessionName = "Team Clone";
+    EmailAuth.sessionName = "Teams";
     var data = await EmailAuth.sendOtp(receiverMail: email.text);
     print(data);
     if (data) {

@@ -1,3 +1,6 @@
+/// Contains all the values that are required in most screens
+/// Or items whose values are fixed and will never change
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:team_clone/Chat/user_model.dart';
@@ -15,62 +18,23 @@ Map<String, UserModel> allUsers = Map();
 Map<String, UserModel> allGroups = Map();
 Map<String, String> allTime = Map();
 
-// Color light = Color(0xFF30475E);
-// Color dark = Color(0xFF222831);
+/// Color scheme for Dark mode
+Color darkThemeDark = Color(0xFF1F1D2B);
+Color darkThemeLight = Color(0xFF252836);
+Color darkThemeBar = Color(0xFF2f3042);
 
-// Color light = Color(0xFF47597E);
-// Color dark = Color(0xFF0A1931);
+/// Color scheme for light mode
+Color lightThemeDark = Color(0xFFF3F3F8);
+Color lightThemeLight = Color(0xFFFFFFFF);
+Color lightThemeBar = Color(0xFFe3e2f0);
 
-Color light = Color(0xFF1F4068);
-Color dark = Color(0xFF17223B);
+/// Primary color of the app
+Color primary = Color(0xFF525298);
 
-// Color light = Color(0xFF29435C);
-// Color dark = Color(0xFF152A38);
-
-List<String> months = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December'
-];
-
-List<String> shortHandMonths = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec'
-];
-
-List<String> years = [
-  '2021',
-  '2022',
-  '2023',
-  '2024',
-  '2025',
-  '2026',
-  '2027',
-  '2028',
-  '2029',
-  '2030'
-];
-
-List week = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+/// variable that are used to set the theme
+Color bar = lightThemeBar;
+Color light = lightThemeBar;
+Color dark = darkThemeBar;
 
 List<BoxShadow> lightShadow = [
   BoxShadow(
@@ -104,8 +68,8 @@ List<BoxShadow> darkShadow = [
 List<BoxShadow> lightShadowTop = [
   BoxShadow(
     offset: Offset(0.0, -5.0),
-    color: Colors.grey[100]!,
-    blurRadius: 2.0, // soften the shadow
+    color: light,
+    blurRadius: 2.0,
     spreadRadius: 0,
   ),
 ];
@@ -114,7 +78,7 @@ List<BoxShadow> darkShadowTop = [
   BoxShadow(
     offset: Offset(0.0, -5.0),
     color: Colors.black26.withOpacity(0.3),
-    blurRadius: 2.0, // soften the shadow
+    blurRadius: 2.0,
     spreadRadius: 0,
   ),
 ];

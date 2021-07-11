@@ -3,8 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:team_clone/Calendar/AddTask.dart';
+import 'package:team_clone/Calendar/CalendarConstants.dart';
 import '../constants.dart';
 
+/// Implements a flutter widget that renders the Calendar screen
+///
+/// - Calendar
+/// - Selected day tasks
 class Calendar extends StatefulWidget {
   @override
   _CalendarState createState() => _CalendarState();
@@ -28,6 +33,7 @@ class _CalendarState extends State<Calendar> {
     setListDates();
   }
 
+  /// used to set dates according to the weekday
   void setListDates() {
     l.clear();
     int firstDay = DateTime(year, month, 1).weekday;
@@ -50,6 +56,7 @@ class _CalendarState extends State<Calendar> {
     }
   }
 
+  /// UI of each date on calendar
   Widget eachDate(var calenderDate) {
     int numDate = -1;
     if (calenderDate != '') numDate = calenderDate;
@@ -79,7 +86,7 @@ class _CalendarState extends State<Calendar> {
           height: 26.h,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(date == numDate ? 8 : 0),
-            color: date == numDate ? Colors.pinkAccent : Colors.transparent,
+            color: date == numDate ? primary : Colors.transparent,
           ),
           child: Align(
             alignment: Alignment.center,
@@ -87,7 +94,11 @@ class _CalendarState extends State<Calendar> {
               calenderDate.toString(),
               style: GoogleFonts.montserrat(
                 fontSize: 14.sp,
-                color: date == numDate ? Colors.white : Color(0xFF1E1D1E),
+                color: date == numDate
+                    ? Colors.white
+                    : isDark
+                        ? Colors.white
+                        : Colors.black,
                 fontWeight: date == numDate ? FontWeight.w400 : FontWeight.w200,
               ),
             ),
@@ -97,6 +108,7 @@ class _CalendarState extends State<Calendar> {
     );
   }
 
+  /// Dates
   Widget eachRow(int i) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -106,6 +118,7 @@ class _CalendarState extends State<Calendar> {
     );
   }
 
+  /// Weekdays
   Widget weekHeader(var weekName) {
     return Container(
       width: 40.w,
@@ -116,7 +129,6 @@ class _CalendarState extends State<Calendar> {
           style: GoogleFonts.montserrat(
             fontSize: 15.sp,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF1E1D1E),
           ),
         ),
       ),
@@ -135,7 +147,7 @@ class _CalendarState extends State<Calendar> {
           ],
         ),
         Divider(
-          color: Colors.black12,
+          color: isDark ? Colors.white70 : Colors.black12,
           indent: 50,
           endIndent: 50,
         ),
@@ -144,6 +156,7 @@ class _CalendarState extends State<Calendar> {
     );
   }
 
+  /// Dropdown for selecting month and year
   Widget monthYear() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -153,15 +166,14 @@ class _CalendarState extends State<Calendar> {
           child: DropdownButton<String>(
             value: months[month - 1],
             menuMaxHeight: 300.h,
-            dropdownColor: Colors.white,
+            dropdownColor: light,
             iconEnabledColor: Colors.black,
             items: months.map((String value) {
               return DropdownMenuItem<String>(
                 value: value,
                 child: Text(
                   value,
-                  style:
-                      GoogleFonts.montserrat(fontSize: 20, color: Colors.black),
+                  style: GoogleFonts.montserrat(fontSize: 20),
                 ),
               );
             }).toList(),
@@ -175,15 +187,14 @@ class _CalendarState extends State<Calendar> {
         DropdownButton<String>(
           value: years[year - 2021],
           menuMaxHeight: 300.h,
-          dropdownColor: Colors.white,
+          dropdownColor: light,
           iconEnabledColor: Colors.black,
           items: years.map((String value) {
             return DropdownMenuItem<String>(
               value: value,
               child: new Text(
                 value,
-                style:
-                    GoogleFonts.montserrat(fontSize: 20, color: Colors.black),
+                style: GoogleFonts.montserrat(fontSize: 20),
               ),
             );
           }).toList(),
@@ -203,7 +214,7 @@ class _CalendarState extends State<Calendar> {
       child: Card(
         elevation: 18.0,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        color: Colors.white,
+        color: light,
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 6.h),
           child: Column(
@@ -220,17 +231,15 @@ class _CalendarState extends State<Calendar> {
     );
   }
 
-  Widget bottomRow(name, profession, time1) {
+  Widget eachTask(name, profession, time) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20.w),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(10.h)),
-          color:
-              isDark ? Colors.white.withOpacity(0.2) : dark.withOpacity(0.2)),
+          borderRadius: BorderRadius.all(Radius.circular(10.h)), color: light),
       child: ListTile(
         leading: Container(
           width: 5.w,
-          color: Colors.pink,
+          color: primary,
         ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -240,8 +249,8 @@ class _CalendarState extends State<Calendar> {
               style: GoogleFonts.montserrat(fontSize: 16),
             ),
             Text(
-              time1,
-              style: GoogleFonts.montserrat(fontSize: 16, color: Colors.pink),
+              time,
+              style: GoogleFonts.montserrat(fontSize: 16),
             )
           ],
         ),
@@ -262,7 +271,7 @@ class _CalendarState extends State<Calendar> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: isDark ? dark : Colors.white,
+        backgroundColor: dark,
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
@@ -304,7 +313,7 @@ class _CalendarState extends State<Calendar> {
                         padding: EdgeInsets.all(6),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
-                            color: Colors.pink.withOpacity(0.8)),
+                            color: primary),
                         child: Icon(Icons.add, size: 25, color: Colors.white),
                       )),
                 ],
@@ -327,9 +336,7 @@ class _CalendarState extends State<Calendar> {
                             maxLines: 3,
                             softWrap: true,
                             textAlign: TextAlign.center,
-                            style: GoogleFonts.montserrat(
-                                fontSize: 18,
-                                color: isDark ? Colors.white : Colors.black)),
+                            style: GoogleFonts.montserrat(fontSize: 18)),
                       ),
                     ],
                   )
@@ -340,7 +347,7 @@ class _CalendarState extends State<Calendar> {
                       itemBuilder: (context, i) {
                         return Container(
                           padding: EdgeInsets.only(top: 8),
-                          child: bottomRow(
+                          child: eachTask(
                               tasks[DateTime(year, month, date).toString()][i]
                                   [2],
                               tasks[DateTime(year, month, date).toString()][i]
