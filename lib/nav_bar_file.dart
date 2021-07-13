@@ -12,7 +12,7 @@ import 'Login/Auth/Google.dart';
 import 'package:team_clone/Notes/notes.dart';
 import 'package:team_clone/Widget/sideBar.dart';
 import 'package:team_clone/Login/AfterLogin/Profile.dart';
-import 'package:team_clone/settings.dart';
+import 'package:team_clone/about.dart';
 import 'Chat/chatScreen.dart';
 import 'homeScreen.dart';
 import 'package:team_clone/Login/login_screen.dart';
@@ -91,14 +91,12 @@ class _NavBarClassState extends State<NavBarClass> {
   /// Displaying any message received in device notifications
   void showNotification(message) async {
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-      'com.example.team_clone',
-      'Team Chat',
-      'Chat notification',
-      playSound: true,
-      enableVibration: true,
-      importance: Importance.max,
-      priority: Priority.high,
-    );
+        'com.example.team_clone', 'Team Chat', 'Chat notification',
+        playSound: true,
+        enableVibration: true,
+        importance: Importance.max,
+        priority: Priority.high,
+        icon: 'icontest');
     var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
     var platformChannelSpecifics = new NotificationDetails(
         android: androidPlatformChannelSpecifics,
@@ -213,7 +211,7 @@ class _NavBarClassState extends State<NavBarClass> {
                 SidebarTile("Chat", NavBarClass(1), false),
                 SidebarTile("Notes", NotesPage(), true),
                 SidebarTile("Calendar", NavBarClass(2), false),
-                SidebarTile("Setting", SettingsPage(), true),
+                SidebarTile("About the app", AboutPage(), true),
                 GestureDetector(
                   child: Padding(
                     padding: const EdgeInsets.only(

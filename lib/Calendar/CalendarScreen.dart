@@ -188,7 +188,7 @@ class _CalendarState extends State<Calendar> {
           value: years[year - 2021],
           menuMaxHeight: 300.h,
           dropdownColor: light,
-          iconEnabledColor: Colors.black,
+          iconEnabledColor: isDark ? Colors.white : Colors.black,
           items: years.map((String value) {
             return DropdownMenuItem<String>(
               value: value,

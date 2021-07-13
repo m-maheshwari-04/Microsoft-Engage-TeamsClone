@@ -210,7 +210,7 @@ class _ChatState extends State<Chat> {
                       padding: EdgeInsets.all(0),
                       icon: Icon(
                         Icons.camera,
-                        color: primary,
+                        color:isDark?Colors.white70: primary,
                       ),
                       onPressed: () async {
                         await ImagePicker()
@@ -236,7 +236,7 @@ class _ChatState extends State<Chat> {
                       padding: EdgeInsets.all(0),
                       icon: Icon(
                         Icons.image,
-                        color: primary,
+                        color:isDark?Colors.white70: primary,
                       ),
                       onPressed: () async {
                         await ImagePicker()
@@ -261,6 +261,7 @@ class _ChatState extends State<Chat> {
                       child: TextFormField(
                         controller: messageTextController,
                         keyboardType: TextInputType.multiline,
+                        textCapitalization: TextCapitalization.sentences,
                         maxLines: 5,
                         minLines: 1,
                         onChanged: (value) {
@@ -277,11 +278,13 @@ class _ChatState extends State<Chat> {
                     IconButton(
                       icon: Icon(
                         Icons.send,
-                        color: primary,
+                        color: isDark?Colors.white70:primary,
                       ),
                       splashRadius: 1,
                       onPressed: () {
-                        if (messageText == null || messageText!.trim() == '') {
+                        if (messageText == null ||
+                            messageText!.length == 0 ||
+                            messageText!.trim() == '') {
                           return;
                         }
                         messageText = messageText!.trimRight();
@@ -302,6 +305,7 @@ class _ChatState extends State<Chat> {
                         sendNotification(
                             widget.hash, messageText!, widget.user.token);
                         updateTime(widget.hash, messageText!);
+                        messageText = '';
                       },
                     ),
                   ],
@@ -527,7 +531,7 @@ class Bubble extends StatelessWidget {
                                             child: CircularProgressIndicator(
                                               valueColor:
                                                   AlwaysStoppedAnimation<Color>(
-                                                     primary),
+                                                      primary),
                                             ),
                                             width: 250.0,
                                             height: 250.0,
@@ -581,23 +585,23 @@ class Bubble extends StatelessWidget {
                                         bottomLeft: Radius.circular(0),
                                       ),
                               ),
-                              child: Stack(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Container(
-                                    padding:
-                                        EdgeInsets.fromLTRB(10, 10, 10, 14),
+                                    padding: EdgeInsets.fromLTRB(10, 6, 10, 0),
                                     child: Text(
                                       message,
-                                      textAlign: isMe
-                                          ? TextAlign.end
-                                          : TextAlign.start,
+                                      textAlign: TextAlign.start,
                                       style: GoogleFonts.montserrat(),
                                     ),
                                   ),
-                                  Positioned(
-                                      bottom: 2,
-                                      right: isMe ? 6 : 8,
-                                      child: chatTime())
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        right: 10.0.w, bottom: 2.0),
+                                    child: chatTime(),
+                                  ),
                                 ],
                               ),
                             ),
@@ -619,6 +623,7 @@ class Bubble extends StatelessWidget {
           formatTime('0' + time.hour.toString()) +
           ' : ' +
           formatTime('0' + time.minute.toString()),
+      textAlign: TextAlign.end,
       style: GoogleFonts.montserrat(
         fontSize: 9.0,
         fontWeight: FontWeight.w300,

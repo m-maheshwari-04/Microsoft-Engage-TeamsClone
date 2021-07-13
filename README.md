@@ -12,12 +12,12 @@ A Video-Chat android application which makes use of the Jitsi for video calling 
 > :heavy_check_mark: **Real-time video call using Jitsi**\
 > :heavy_check_mark: **Screen sharing**\
 > :heavy_check_mark: **Join an existing group or create your own group to communicate with everyone**\
-> :heavy_check_mark: **One-to-one conversation**\  
+> :heavy_check_mark: **One-to-one conversation**\
 > :heavy_check_mark: **Share moments**\
 > :heavy_check_mark: **Push notification when you receive a new message**\
 > :heavy_check_mark: **Calendar**\
-> :heavy_check_mark: **Notes** \  
-> :heavy_check_mark: **Responsive layout** \
+> :heavy_check_mark: **Notes**\
+> :heavy_check_mark: **Responsive layout**\
 
 
 # Tech Stack:
@@ -78,11 +78,6 @@ A Video-Chat android application which makes use of the Jitsi for video calling 
   <img src="/Screenshots/message.jpg" width="250" /> 
   <img src="/Screenshots/notes.jpg" width="250" />
 </p>
-<!-- ![Screenshot](Screenshots/home.jpg)
-![Screenshot](Screenshots/chat.jpg)
-![Screenshot](Screenshots/task.jpg) -->
-
-
 
 # Jitsi SDK used in this project
 
@@ -91,4 +86,3 @@ Followed the steps provided on [Jitsi website](https://jitsi.github.io/handbook/
 - User interface changes.
 - Added only those functionalities that were required.
 - Video call message sync with chat.
-
